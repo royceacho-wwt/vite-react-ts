@@ -10,6 +10,8 @@
   --toggle-bg-hover: rgba(255, 255, 255, 0.2);
   --toggle-color: #ffffff;
   --toggle-border: rgba(255, 255, 255, 0.4);
+  --navbar-bg: rgba(30, 33, 40, 0.85);
+  --navbar-border: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme='light'] {
@@ -21,6 +23,8 @@
   --toggle-bg-hover: rgba(0, 0, 0, 0.14);
   --toggle-color: #1a1a2e;
   --toggle-border: rgba(0, 0, 0, 0.25);
+  --navbar-bg: rgba(232, 234, 246, 0.9);
+  --navbar-border: rgba(0, 0, 0, 0.12);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
