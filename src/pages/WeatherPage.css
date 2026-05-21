@@ -11,6 +11,7 @@
   font-weight: 800;
   margin-bottom: 0.25rem;
   color: var(--color);
+  text-align: center;
 }
 
 .weather-subtitle {
@@ -19,6 +20,7 @@
   margin-top: 0;
   margin-bottom: 1.75rem;
   font-size: 1rem;
+  text-align: center;
 }
 
 /* ── Form ──────────────────────────────────────────────────────────────────── */
@@ -26,6 +28,7 @@
 .weather-form {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
@@ -40,6 +43,7 @@
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .weather-input {
