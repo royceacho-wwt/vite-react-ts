@@ -41,12 +41,12 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
         </li>
         <li>
           <a
-            href="#/matt"
-            className={`navbar-link${currentPath === '/matt' ? ' navbar-link--active' : ''}`}
-            onClick={(e) => handleClick(e, '/matt')}
-            aria-current={currentPath === '/matt' ? 'page' : undefined}
+            href="https://mattvanslyke-wwt.aine-cohort-calm-fox.net/"
+            className="navbar-link"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            👨‍💻 Matt's Page
+            👨‍💻 Matt&apos;s Page
           </a>
         </li>
       </ul>
