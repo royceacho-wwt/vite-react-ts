@@ -2,43 +2,31 @@ import './App.css';
 
 import { useState } from 'react';
 
-import logo from '@/assets/logo.svg';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
+import { useRouter } from '@/hooks/useRouter';
+import { HomePage } from '@/pages/HomePage';
+import { WeatherPage } from '@/pages/WeatherPage';
 
 function App() {
   const [count, setCount] = useState(0);
   const [isDark, toggleTheme] = useDarkMode();
+  const [path, navigate] = useRouter();
+
+  const renderPage = () => {
+    switch (path) {
+      case '/weather':
+        return <WeatherPage />;
+      case '/':
+      default:
+        return <HomePage count={count} onIncrement={() => setCount((c) => c + 1)} />;
+    }
+  };
 
   return (
     <div className="App">
-      <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello, Royce!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            Count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+      <NavBar currentPath={path} onNavigate={navigate} isDark={isDark} onToggleTheme={toggleTheme} />
+      {renderPage()}
     </div>
   );
 }

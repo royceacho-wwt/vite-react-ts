@@ -10,6 +10,15 @@
   --toggle-bg-hover: rgba(255, 255, 255, 0.2);
   --toggle-color: #ffffff;
   --toggle-border: rgba(255, 255, 255, 0.4);
+
+  /* NavBar */
+  --nav-bg: #1e2129;
+  --nav-border: rgba(255, 255, 255, 0.1);
+  --nav-active-bg: rgba(97, 218, 251, 0.15);
+
+  /* Cards / inputs */
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --input-bg: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='light'] {
@@ -21,6 +30,15 @@
   --toggle-bg-hover: rgba(0, 0, 0, 0.14);
   --toggle-color: #1a1a2e;
   --toggle-border: rgba(0, 0, 0, 0.25);
+
+  /* NavBar */
+  --nav-bg: #ffffff;
+  --nav-border: rgba(0, 0, 0, 0.1);
+  --nav-active-bg: rgba(0, 102, 204, 0.1);
+
+  /* Cards / inputs */
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
