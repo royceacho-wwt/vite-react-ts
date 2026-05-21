@@ -21,6 +21,8 @@ interface DayForecast {
   windSpeedMax: number;
 }
 
+type ForecastDays = 7 | 14;
+
 /* ── WMO weather code helpers ─────────────────────────────────────────────── */
 
 const WMO_DESCRIPTIONS: Record<number, string> = {
@@ -112,13 +114,13 @@ async function geocodeZip(zip: string): Promise<GeoResult> {
   return best as GeoResult;
 }
 
-async function fetchForecast(lat: number, lon: number): Promise<DayForecast[]> {
+async function fetchForecast(lat: number, lon: number, days: ForecastDays): Promise<DayForecast[]> {
   const url =
     `https://api.open-meteo.com/v1/forecast` +
     `?latitude=${lat}&longitude=${lon}` +
     `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max` +
     `&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch` +
-    `&timezone=auto&forecast_days=7`;
+    `&timezone=auto&forecast_days=${days}`;
 
   const res = await fetch(url);
   if (!res.ok) throw new Error('Forecast request failed');
@@ -141,6 +143,7 @@ async function fetchForecast(lat: number, lon: number): Promise<DayForecast[]> {
 
 export function WeatherPage() {
   const [zip, setZip] = useState('');
+  const [forecastDays, setForecastDays] = useState<ForecastDays>(7);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [location, setLocation] = useState<GeoResult | null>(null);
@@ -158,9 +161,29 @@ export function WeatherPage() {
 
     try {
       const geo = await geocodeZip(trimmed);
-      const days = await fetchForecast(geo.latitude, geo.longitude);
+      const days = await fetchForecast(geo.latitude, geo.longitude, forecastDays);
       setLocation(geo);
       setForecast(days);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /** Switch the forecast range and, if a location is already loaded, re-fetch immediately. */
+  const handleDaysToggle = async (days: ForecastDays) => {
+    setForecastDays(days);
+
+    if (!location) return;
+
+    setLoading(true);
+    setError(null);
+    setForecast(null);
+
+    try {
+      const newForecast = await fetchForecast(location.latitude, location.longitude, days);
+      setForecast(newForecast);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
     } finally {
@@ -172,7 +195,7 @@ export function WeatherPage() {
 
   return (
     <main className="weather-page">
-      <h1 className="weather-title">7-Day Weather Forecast</h1>
+      <h1 className="weather-title">{forecastDays}-Day Weather Forecast</h1>
       <p className="weather-subtitle">Enter a US ZIP code to get the latest forecast.</p>
 
       <form className="weather-form" onSubmit={handleSubmit} aria-label="Zip code forecast form">
@@ -192,6 +215,26 @@ export function WeatherPage() {
           />
           <button type="submit" className="weather-btn" disabled={loading || !zip.trim()}>
             {loading ? 'Loading…' : 'Get Forecast'}
+          </button>
+        </div>
+
+        {/* ── Forecast range toggle ── */}
+        <div className="weather-toggle" role="group" aria-label="Forecast range">
+          <button
+            type="button"
+            className={`weather-toggle-btn${forecastDays === 7 ? ' weather-toggle-btn--active' : ''}`}
+            onClick={() => handleDaysToggle(7)}
+            aria-pressed={forecastDays === 7}
+          >
+            7-Day
+          </button>
+          <button
+            type="button"
+            className={`weather-toggle-btn${forecastDays === 14 ? ' weather-toggle-btn--active' : ''}`}
+            onClick={() => handleDaysToggle(14)}
+            aria-pressed={forecastDays === 14}
+          >
+            14-Day
           </button>
         </div>
       </form>
@@ -219,7 +262,7 @@ export function WeatherPage() {
       )}
 
       {forecast && (
-        <section aria-label="7-day forecast" className="weather-grid">
+        <section aria-label={`${forecastDays}-day forecast`} className="weather-grid">
           {forecast.map((day, idx) => (
             <article key={day.date} className={`weather-card${idx === 0 ? ' weather-card--today' : ''}`}>
               <div className="weather-card-day">{idx === 0 ? 'Today' : formatDate(day.date)}</div>

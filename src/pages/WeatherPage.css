@@ -86,6 +86,44 @@
   cursor: not-allowed;
 }
 
+/* ── Forecast range toggle ─────────────────────────────────────────────────── */
+
+.weather-toggle {
+  display: inline-flex;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  border: 2px solid var(--nav-border);
+  margin-top: 0.5rem;
+  width: fit-content;
+}
+
+.weather-toggle-btn {
+  padding: 0.45rem 1.1rem;
+  border: none;
+  background: transparent;
+  color: var(--color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  /* Divider between the two buttons */
+  border-right: 1px solid var(--nav-border);
+}
+
+.weather-toggle-btn:last-child {
+  border-right: none;
+}
+
+.weather-toggle-btn:hover:not(.weather-toggle-btn--active) {
+  background: var(--nav-border);
+}
+
+.weather-toggle-btn--active {
+  background: var(--link-color);
+  color: #fff;
+  cursor: default;
+}
+
 /* ── Error ─────────────────────────────────────────────────────────────────── */
 
 .weather-error {
@@ -129,7 +167,7 @@
   margin-top: 0.15rem;
 }
 
-/* ── 7-day grid ────────────────────────────────────────────────────────────── */
+/* ── Forecast grid ─────────────────────────────────────────────────────────── */
 
 .weather-grid {
   display: grid;

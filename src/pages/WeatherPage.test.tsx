@@ -18,16 +18,25 @@ const mockGeoResponse = {
   ],
 };
 
-const mockForecastResponse = {
-  daily: {
-    time: ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04', '2024-01-05', '2024-01-06', '2024-01-07'],
-    weather_code: [0, 1, 2, 3, 61, 71, 95],
-    temperature_2m_max: [72, 68, 65, 70, 60, 55, 75],
-    temperature_2m_min: [55, 52, 50, 54, 45, 40, 58],
-    precipitation_sum: [0, 0, 0.1, 0, 0.5, 1.2, 0],
-    wind_speed_10m_max: [10, 12, 15, 8, 20, 18, 9],
-  },
-};
+function makeForecastResponse(days: number) {
+  const time = Array.from({ length: days }, (_, i) => {
+    const d = new Date(2024, 0, 1 + i);
+    return d.toISOString().split('T')[0];
+  });
+  return {
+    daily: {
+      time,
+      weather_code: Array(days).fill(0),
+      temperature_2m_max: Array(days).fill(72),
+      temperature_2m_min: Array(days).fill(55),
+      precipitation_sum: Array(days).fill(0),
+      wind_speed_10m_max: Array(days).fill(10),
+    },
+  };
+}
+
+const mockForecastResponse7 = makeForecastResponse(7);
+const mockForecastResponse14 = makeForecastResponse(14);
 
 describe('WeatherPage', () => {
   beforeEach(() => {
@@ -37,7 +46,8 @@ describe('WeatherPage', () => {
         if ((url as string).includes('geocoding-api')) {
           return Promise.resolve({ ok: true, json: () => Promise.resolve(mockGeoResponse) });
         }
-        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockForecastResponse) });
+        // Default to 7-day response; tests that need 14-day override this
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockForecastResponse7) });
       })
     );
   });
@@ -46,20 +56,45 @@ describe('WeatherPage', () => {
     vi.unstubAllGlobals();
   });
 
-  it('renders the page title', () => {
+  it('renders the page title with 7-day by default', () => {
     render(<WeatherPage />);
     expect(screen.getByText(/7-Day Weather Forecast/i)).toBeDefined();
   });
 
   it('renders the zip code input', () => {
     render(<WeatherPage />);
-    // Query by role to avoid ambiguity with the form's aria-label
     expect(screen.getByRole('textbox')).toBeDefined();
   });
 
   it('renders the Get Forecast button', () => {
     render(<WeatherPage />);
     expect(screen.getByRole('button', { name: /get forecast/i })).toBeDefined();
+  });
+
+  it('renders the forecast range toggle buttons', () => {
+    render(<WeatherPage />);
+    expect(screen.getByRole('button', { name: /7-day/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /14-day/i })).toBeDefined();
+  });
+
+  it('7-Day toggle button is active by default', () => {
+    render(<WeatherPage />);
+    const btn7 = screen.getByRole('button', { name: /7-day/i }) as HTMLButtonElement;
+    expect(btn7.getAttribute('aria-pressed')).toBe('true');
+    const btn14 = screen.getByRole('button', { name: /14-day/i }) as HTMLButtonElement;
+    expect(btn14.getAttribute('aria-pressed')).toBe('false');
+  });
+
+  it('clicking 14-Day updates the title and toggles aria-pressed', () => {
+    render(<WeatherPage />);
+    fireEvent.click(screen.getByRole('button', { name: /14-day/i }));
+    expect(screen.getByText(/14-Day Weather Forecast/i)).toBeDefined();
+    expect((screen.getByRole('button', { name: /14-day/i }) as HTMLButtonElement).getAttribute('aria-pressed')).toBe(
+      'true'
+    );
+    expect((screen.getByRole('button', { name: /7-day/i }) as HTMLButtonElement).getAttribute('aria-pressed')).toBe(
+      'false'
+    );
   });
 
   it('button is disabled when input is empty', () => {
@@ -75,7 +110,7 @@ describe('WeatherPage', () => {
     expect(btn.disabled).toBe(false);
   });
 
-  it('shows location name and forecast cards after a successful search', async () => {
+  it('shows location name and 7 forecast cards after a successful 7-day search', async () => {
     render(<WeatherPage />);
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '90210' } });
     fireEvent.click(screen.getByRole('button', { name: /get forecast/i }));
@@ -84,9 +119,83 @@ describe('WeatherPage', () => {
       expect(screen.getByText(/Beverly Hills/i)).toBeDefined();
     });
 
-    // 7 cards rendered
     const cards = screen.getAllByRole('article');
     expect(cards.length).toBe(7);
+  });
+
+  it('shows 14 forecast cards after a successful 14-day search', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string) => {
+        if ((url as string).includes('geocoding-api')) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(mockGeoResponse) });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockForecastResponse14) });
+      })
+    );
+
+    render(<WeatherPage />);
+    // Switch to 14-day before searching
+    fireEvent.click(screen.getByRole('button', { name: /14-day/i }));
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '90210' } });
+    fireEvent.click(screen.getByRole('button', { name: /get forecast/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Beverly Hills/i)).toBeDefined();
+    });
+
+    const cards = screen.getAllByRole('article');
+    expect(cards.length).toBe(14);
+  });
+
+  it('re-fetches with 14 days when toggle is clicked after a result is already shown', async () => {
+    // First fetch returns 7 days, second returns 14 days
+    let callCount = 0;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string) => {
+        if ((url as string).includes('geocoding-api')) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(mockGeoResponse) });
+        }
+        callCount += 1;
+        const payload = callCount === 1 ? mockForecastResponse7 : mockForecastResponse14;
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(payload) });
+      })
+    );
+
+    render(<WeatherPage />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '90210' } });
+    fireEvent.click(screen.getByRole('button', { name: /get forecast/i }));
+
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(7));
+
+    // Now switch to 14-day — should trigger an automatic re-fetch
+    fireEvent.click(screen.getByRole('button', { name: /14-day/i }));
+
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(14));
+  });
+
+  it('passes forecast_days=14 in the API URL when 14-day is selected', async () => {
+    const fetchMock = vi.fn((url: string) => {
+      if ((url as string).includes('geocoding-api')) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockGeoResponse) });
+      }
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(mockForecastResponse14) });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<WeatherPage />);
+    fireEvent.click(screen.getByRole('button', { name: /14-day/i }));
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '90210' } });
+    fireEvent.click(screen.getByRole('button', { name: /get forecast/i }));
+
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(14));
+
+    const forecastCall = fetchMock.mock.calls.find(([url]) => (url as string).includes('open-meteo.com/v1/forecast'));
+    expect(forecastCall).toBeDefined();
+    // Use index access via Array.from to avoid non-null assertion lint warning
+    const calledUrl = Array.from(forecastCall ?? [])[0] as string;
+    expect(calledUrl).toContain('forecast_days=14');
   });
 
   it('shows "Today" label on the first card', async () => {
