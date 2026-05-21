@@ -95,6 +95,8 @@
   border: 2px solid var(--nav-border);
   margin-top: 0.5rem;
   width: fit-content;
+  /* Center the toggle pill with the rest of the page content */
+  align-self: center;
 }
 
 .weather-toggle-btn {
