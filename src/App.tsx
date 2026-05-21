@@ -11,7 +11,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>What up, Royce?</p>
+        <p>What&apos;s poppin!</p>
         <p>
           <button type="button" onClick={() => setCount((count) => count + 1)}>
             Count is: {count}
@@ -40,4 +40,3 @@ function App() {
 }
 
 export default App;
-
