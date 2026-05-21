@@ -1,0 +1,25 @@
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.45rem 0.9rem;
+  border: 2px solid var(--toggle-border);
+  border-radius: 2rem;
+  background: var(--toggle-bg);
+  color: var(--toggle-color);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  background: var(--toggle-bg-hover);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid var(--toggle-border);
+  outline-offset: 3px;
+}
+

@@ -3,12 +3,16 @@ import './App.css';
 import { useState } from 'react';
 
 import logo from '@/assets/logo.svg';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 function App() {
   const [count, setCount] = useState(0);
+  const [isDark, toggleTheme] = useDarkMode();
 
   return (
     <div className="App">
+      <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello, Royce!</p>
