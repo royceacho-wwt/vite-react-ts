@@ -17,6 +17,7 @@
   "author": "pchmn",
   "license": "MIT",
   "homepage": "https://github.com/pchmn/vite-react-ts-ghactions-template",
+  "packageManager": "pnpm@11.1.3",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -64,3 +65,4 @@
     "vitest": "^0.30.1"
   }
 }
+
