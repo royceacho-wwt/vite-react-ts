@@ -93,6 +93,15 @@ function formatDate(isoDate: string): string {
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
+/** Split an array into consecutive chunks of `size`. */
+function chunkArray<T>(arr: T[], size: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push(arr.slice(i, i + size));
+  }
+  return chunks;
+}
+
 /* ── API calls ───────────────────────────────────────────────────────────── */
 
 async function geocodeZip(zip: string): Promise<GeoResult> {
@@ -193,6 +202,10 @@ export function WeatherPage() {
 
   const todayForecast = forecast?.[0];
 
+  // Build a running index so we can correctly label "Today" on the very first card
+  // regardless of which week-row it lives in.
+  let cardIndex = 0;
+
   return (
     <main className="weather-page">
       <h1 className="weather-title">{forecastDays}-Day Weather Forecast</h1>
@@ -262,27 +275,34 @@ export function WeatherPage() {
       )}
 
       {forecast && (
-        <section aria-label={`${forecastDays}-day forecast`} className="weather-grid">
-          {forecast.map((day, idx) => (
-            <article key={day.date} className={`weather-card${idx === 0 ? ' weather-card--today' : ''}`}>
-              <div className="weather-card-day">{idx === 0 ? 'Today' : formatDate(day.date)}</div>
-              <div className="weather-card-emoji" role="img" aria-label={wmoDescription(day.weatherCode)}>
-                {wmoEmoji(day.weatherCode)}
-              </div>
-              <div className="weather-card-desc">{wmoDescription(day.weatherCode)}</div>
-              <div className="weather-card-temps">
-                <span className="weather-card-high">{day.tempMax}°F</span>
-                <span className="weather-card-sep">/</span>
-                <span className="weather-card-low">{day.tempMin}°F</span>
-              </div>
-              <div className="weather-card-details">
-                <span title="Precipitation">
-                  💧 {day.precipitationSum.toFixed(2)}
-                  {'"'}
-                </span>
-                <span title="Max wind speed">💨 {day.windSpeedMax} mph</span>
-              </div>
-            </article>
+        <section aria-label={`${forecastDays}-day forecast`} className="weather-forecast">
+          {chunkArray(forecast, 7).map((week, weekIdx) => (
+            <div key={weekIdx} className="weather-week">
+              {week.map((day) => {
+                const idx = cardIndex++;
+                return (
+                  <article key={day.date} className={`weather-card${idx === 0 ? ' weather-card--today' : ''}`}>
+                    <div className="weather-card-day">{idx === 0 ? 'Today' : formatDate(day.date)}</div>
+                    <div className="weather-card-emoji" role="img" aria-label={wmoDescription(day.weatherCode)}>
+                      {wmoEmoji(day.weatherCode)}
+                    </div>
+                    <div className="weather-card-desc">{wmoDescription(day.weatherCode)}</div>
+                    <div className="weather-card-temps">
+                      <span className="weather-card-high">{day.tempMax}°F</span>
+                      <span className="weather-card-sep">/</span>
+                      <span className="weather-card-low">{day.tempMin}°F</span>
+                    </div>
+                    <div className="weather-card-details">
+                      <span title="Precipitation">
+                        💧 {day.precipitationSum.toFixed(2)}
+                        {'"'}
+                      </span>
+                      <span title="Max wind speed">💨 {day.windSpeedMax} mph</span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           ))}
         </section>
       )}
