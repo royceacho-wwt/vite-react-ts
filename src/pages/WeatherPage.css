@@ -195,9 +195,22 @@
 
 /* ── Forecast card ─────────────────────────────────────────────────────────── */
 
+/*
+  Each card uses two stacked pseudo-elements:
+    ::before  — the spotlight glow layer (radial gradient that follows the cursor)
+    ::after   — the shimmer border (conic gradient border that follows the cursor)
+
+  The actual card content sits above both pseudo-elements via position:relative on
+  all direct children so they are never obscured.
+*/
+
 .weather-card {
+  /* Anchor point for the pseudo-elements */
+  position: relative;
+  /* Clip the spotlight & border glow to the card's rounded shape */
+  overflow: hidden;
+
   background: var(--card-bg);
-  border: 1px solid var(--nav-border);
   border-radius: 1rem;
   padding: 1.1rem 0.75rem 0.9rem;
   display: flex;
@@ -205,17 +218,112 @@
   align-items: center;
   gap: 0.3rem;
   text-align: center;
-  transition: transform 0.15s, box-shadow 0.15s;
+
+  /*
+    A subtle 1px solid border is drawn via box-shadow so we can overlay the
+    conic-gradient shimmer border (::after) on top of it without fighting with
+    the border property.
+  */
+  box-shadow: 0 0 0 1px var(--nav-border);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  /* Initialised by the SpotlightCard component via inline style */
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+
+  /* Spotlight visibility: 0 at rest → 1 on hover (driven by :hover) */
+  --spotlight-opacity: 0;
+  --border-opacity: 0;
 }
 
+/* ── Lift + sharpen box-shadow on hover ────────────────────────────────────── */
 .weather-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 0 0 1px var(--nav-border),
+    0 12px 32px rgba(0, 0, 0, 0.25);
+  --spotlight-opacity: 1;
+  --border-opacity: 1;
 }
 
+/* ── Spotlight glow — ::before ─────────────────────────────────────────────── */
+.weather-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+
+  background: radial-gradient(
+    circle 120px at var(--mouse-x) var(--mouse-y),
+    var(--spotlight-color, rgba(97, 218, 251, 0.18)) 0%,
+    transparent 70%
+  );
+
+  opacity: var(--spotlight-opacity);
+  transition: opacity 0.35s ease;
+}
+
+/* ── Shimmer border — ::after ──────────────────────────────────────────────── */
+/*
+  A 1-px inner ring painted with a conic gradient that rotates around the
+  cursor position, creating the effect of light bouncing off the card edge.
+*/
+.weather-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+
+  /* 1-px inset border via a gradient mask */
+  background: conic-gradient(
+    from 0deg at var(--mouse-x) var(--mouse-y),
+    transparent 0deg,
+    var(--border-highlight, rgba(97, 218, 251, 0.7)) 60deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+
+  /* Mask down to a thin border ring */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+
+  opacity: var(--border-opacity);
+  transition: opacity 0.35s ease;
+}
+
+/* ── Ensure card content stays above the pseudo-elements ───────────────────── */
+.weather-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Light-mode: warmer spotlight tint ─────────────────────────────────────── */
+[data-theme='light'] .weather-card {
+  --spotlight-color: rgba(0, 102, 204, 0.10);
+  --border-highlight: rgba(0, 102, 204, 0.55);
+}
+
+/* ── "Today" card — stronger highlight ring ────────────────────────────────── */
 .weather-card--today {
-  border-color: var(--link-color);
-  box-shadow: 0 0 0 2px var(--link-color);
+  box-shadow:
+    0 0 0 2px var(--link-color),
+    0 0 14px rgba(97, 218, 251, 0.2);
+}
+
+.weather-card--today:hover {
+  box-shadow:
+    0 0 0 2px var(--link-color),
+    0 14px 36px rgba(0, 0, 0, 0.28),
+    0 0 20px rgba(97, 218, 251, 0.25);
 }
 
 .weather-card-day {

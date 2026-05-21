@@ -1,6 +1,6 @@
 import './WeatherPage.css';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 /* ── Types ───────────────────────────────────────────────────────────────── */
 
@@ -139,6 +139,51 @@ async function fetchForecast(lat: number, lon: number, days: ForecastDays): Prom
   }));
 }
 
+/* ── SpotlightCard ────────────────────────────────────────────────────────
+   Tracks the cursor position relative to the card and exposes it via CSS
+   custom properties so the spotlight gradient can follow the mouse.
+   ─────────────────────────────────────────────────────────────────────── */
+
+interface SpotlightCardProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+function SpotlightCard({ children, className = '' }: SpotlightCardProps) {
+  const cardRef = useRef<HTMLElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty('--mouse-x', `${x}%`);
+    card.style.setProperty('--mouse-y', `${y}%`);
+  };
+
+  const handleMouseLeave = () => {
+    // Reset to card centre so the glow fades out from the middle
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.setProperty('--mouse-x', '50%');
+    card.style.setProperty('--mouse-y', '50%');
+  };
+
+  return (
+    <article
+      ref={cardRef}
+      className={`weather-card ${className}`.trim()}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      // Initialise the CSS vars so the pseudo-element is always valid
+      style={{ '--mouse-x': '50%', '--mouse-y': '50%' } as React.CSSProperties}
+    >
+      {children}
+    </article>
+  );
+}
+
 /* ── Component ────────────────────────────────────────────────────────────── */
 
 export function WeatherPage() {
@@ -264,7 +309,7 @@ export function WeatherPage() {
       {forecast && (
         <section aria-label={`${forecastDays}-day forecast`} className="weather-forecast">
           {forecast.map((day, idx) => (
-            <article key={day.date} className={`weather-card${idx === 0 ? ' weather-card--today' : ''}`}>
+            <SpotlightCard key={day.date} className={idx === 0 ? 'weather-card--today' : ''}>
               <div className="weather-card-day">{idx === 0 ? 'Today' : formatDate(day.date)}</div>
               <div className="weather-card-emoji" role="img" aria-label={wmoDescription(day.weatherCode)}>
                 {wmoEmoji(day.weatherCode)}
@@ -282,7 +327,7 @@ export function WeatherPage() {
                 </span>
                 <span title="Max wind speed">💨 {day.windSpeedMax} mph</span>
               </div>
-            </article>
+            </SpotlightCard>
           ))}
         </section>
       )}

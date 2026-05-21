@@ -238,3 +238,103 @@ describe('WeatherPage', () => {
     });
   });
 });
+
+/* ── SpotlightCard interaction tests ─────────────────────────────────────── */
+
+describe('SpotlightCard spotlight effect', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((url: string) => {
+        if ((url as string).includes('geocoding-api')) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(mockGeoResponse) });
+        }
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockForecastResponse7) });
+      })
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  async function renderWithForecast() {
+    render(<WeatherPage />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '90210' } });
+    fireEvent.click(screen.getByRole('button', { name: /get forecast/i }));
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(7));
+    return screen.getAllByRole('article');
+  }
+
+  it('each forecast card is rendered as an <article> element', async () => {
+    const view = await renderWithForecast();
+    expect(view.length).toBe(7);
+    view.forEach((card) => expect(card.tagName).toBe('ARTICLE'));
+  });
+
+  it('cards initialise with --mouse-x and --mouse-y CSS custom properties set to 50%', async () => {
+    const view = await renderWithForecast();
+    const first = view[0] as HTMLElement;
+    expect(first.style.getPropertyValue('--mouse-x')).toBe('50%');
+    expect(first.style.getPropertyValue('--mouse-y')).toBe('50%');
+  });
+
+  it('mousemove on a card updates --mouse-x and --mouse-y', async () => {
+    const view = await renderWithForecast();
+    const card = view[1] as HTMLElement;
+
+    // Fake getBoundingClientRect so relative calculations work in jsdom
+    vi.spyOn(card, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 200,
+      right: 200,
+      bottom: 200,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    });
+
+    fireEvent.mouseMove(card, { clientX: 100, clientY: 50 });
+
+    expect(card.style.getPropertyValue('--mouse-x')).toBe('50%');
+    expect(card.style.getPropertyValue('--mouse-y')).toBe('25%');
+  });
+
+  it('mouseleave resets --mouse-x and --mouse-y to 50%', async () => {
+    const view = await renderWithForecast();
+    const card = view[1] as HTMLElement;
+
+    vi.spyOn(card, 'getBoundingClientRect').mockReturnValue({
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 200,
+      right: 200,
+      bottom: 200,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    });
+
+    // Move mouse to a corner, then leave
+    fireEvent.mouseMove(card, { clientX: 10, clientY: 10 });
+    expect(card.style.getPropertyValue('--mouse-x')).toBe('5%');
+
+    fireEvent.mouseLeave(card);
+    expect(card.style.getPropertyValue('--mouse-x')).toBe('50%');
+    expect(card.style.getPropertyValue('--mouse-y')).toBe('50%');
+  });
+
+  it('first card carries the weather-card--today CSS class', async () => {
+    const view = await renderWithForecast();
+    expect(view[0].classList.contains('weather-card--today')).toBe(true);
+    expect(view[1].classList.contains('weather-card--today')).toBe(false);
+  });
+
+  it('all cards carry the weather-card CSS class', async () => {
+    const view = await renderWithForecast();
+    view.forEach((card) => expect(card.classList.contains('weather-card')).toBe(true));
+  });
+});
