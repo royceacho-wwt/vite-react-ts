@@ -14,18 +14,20 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--header-bg);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--link-color);
+  transition: color 0.3s;
 }
 
 @keyframes App-logo-spin {
@@ -40,3 +42,4 @@
 button {
   font-size: calc(10px + 2vmin);
 }
+
