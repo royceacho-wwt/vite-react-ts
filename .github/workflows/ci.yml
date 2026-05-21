@@ -45,13 +45,13 @@ jobs:
         run: pnpm test:ci
 
       # Upload dist artifacts
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
 
       # Upload coverage artifacts
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/lcov.info
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Download coverage artifacts
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage
 
@@ -87,7 +87,7 @@ jobs:
       url: https://pchmn.github.io/vite-react-ts-ghactions-template/
     steps:
       # Download dist artifacts
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
@@ -97,3 +97,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: dist
+
