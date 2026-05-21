@@ -3,6 +3,7 @@ import './App.css';
 import { useState } from 'react';
 
 import logo from '@/assets/logo.svg';
+import { CurrentDate } from '@/components/CurrentDate';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
@@ -14,6 +15,7 @@ function App() {
     <div className="App">
       <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
       <header className="App-header">
+        <CurrentDate />
         <img src={logo} className="App-logo" alt="logo" />
         <p>Hello, St. Louis!</p>
         <p>

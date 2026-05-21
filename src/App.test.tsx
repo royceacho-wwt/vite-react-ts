@@ -35,3 +35,11 @@ test('clicking theme toggle changes its label', () => {
   const newLabel = screen.getByRole('button', { name: /switch to (dark|light) mode/i }).getAttribute('aria-label');
   expect(newLabel).not.toBe(initialLabel);
 });
+
+test('renders the current date widget', () => {
+  render(<App />);
+
+  const widget = screen.getByLabelText('current date');
+  expect(widget).toBeDefined();
+  expect(widget.textContent).toContain(new Date().getFullYear().toString());
+});
