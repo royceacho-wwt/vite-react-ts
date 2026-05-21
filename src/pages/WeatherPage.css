@@ -167,15 +167,24 @@
   margin-top: 0.15rem;
 }
 
-/* ── Forecast grid ─────────────────────────────────────────────────────────── */
+/* ── Forecast layout ───────────────────────────────────────────────────────── */
 
-.weather-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+.weather-forecast {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Each week row: 7 cards side-by-side, all equal width */
+.weather-week {
+  display: flex;
+  flex-direction: row;
   gap: 0.9rem;
 }
 
 .weather-card {
+  flex: 1 1 0;          /* grow & shrink equally so all 7 share the row */
+  min-width: 0;         /* allow cards to shrink below content width */
   background: var(--card-bg);
   border: 1px solid var(--nav-border);
   border-radius: 1rem;
