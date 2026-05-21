@@ -6,7 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/vite-react-ts-ghactions-template/',
+  base: '/vite-react-ts/',
   plugins: [react(), tsconfigPaths()],
   build: {
     sourcemap: true,
@@ -21,3 +21,4 @@ export default defineConfig({
     },
   },
 });
+
