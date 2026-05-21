@@ -1,0 +1,69 @@
+/* ── NavBar ────────────────────────────────────────────────────────────────── */
+
+.navbar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+  height: 56px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.navbar-brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.navbar-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.navbar-link {
+  display: inline-block;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.5rem;
+  color: var(--color);
+  text-decoration: none;
+  font-size: 0.97rem;
+  font-weight: 500;
+  opacity: 0.75;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.navbar-link:hover {
+  opacity: 1;
+  background: var(--toggle-bg-hover);
+}
+
+.navbar-link--active {
+  opacity: 1;
+  background: var(--nav-active-bg);
+  font-weight: 700;
+}
+
+/* Push the theme toggle to the far right */
+.navbar-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Override the ThemeToggle fixed positioning when inside the navbar */
+.navbar-actions .theme-toggle {
+  position: static;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+}
+
