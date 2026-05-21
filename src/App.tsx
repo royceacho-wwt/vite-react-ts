@@ -15,7 +15,7 @@ function App() {
       <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello, Royce!</p>
+        <p>Hello, St. Louis!</p>
         <p>
           <button type="button" onClick={() => setCount((count) => count + 1)}>
             Count is: {count}
