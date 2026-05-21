@@ -15,6 +15,13 @@ on:
     # Run only if files modified are not docs
     paths-ignore:
       - "*.md"
+  # Allow the deploy job to be triggered manually from the Actions tab
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, cancelling any in-progress run
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
 
@@ -74,17 +81,18 @@ jobs:
 
   deploy:
     name: Deploy
-    # Deploy only for main branch
-    if: github.ref == 'refs/heads/main'
+    # Deploy only for main branch (or manual trigger)
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     needs: buildAndTest
     runs-on: ubuntu-latest
+    # --- Permissions required by the official GitHub Pages deployment actions ---
     permissions:
-      contents: write
-    # Manual deployment
-    # See https://devblogs.microsoft.com/devops/i-need-manual-approvers-for-github-actions-and-i-got-them-now/
+      contents: read      # read the repo
+      pages: write        # deploy to GitHub Pages
+      id-token: write     # verify the deployment source via OIDC
     environment:
-      name: royceacho-wwt.github.io/vite-react-ts
-      url: https://royceacho-wwt.github.io/vite-react-ts/
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       # Download dist artifacts
       - uses: actions/download-artifact@v4
@@ -92,10 +100,15 @@ jobs:
           name: dist
           path: dist/
 
-      - name: 🚀 Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: 🔧 Configure GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: 📦 Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist
-          enable_jekyll: false
+          path: dist/
+
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
