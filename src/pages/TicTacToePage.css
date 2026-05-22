@@ -1,0 +1,226 @@
+/* ── Page layout ──────────────────────────────────────────────────────────── */
+
+.ttt-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 4rem;
+  min-height: calc(100vh - 64px);
+  gap: 1.25rem;
+}
+
+.ttt-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.ttt-subtitle {
+  margin: 0;
+  opacity: 0.7;
+  font-size: 1rem;
+}
+
+/* ── Difficulty ───────────────────────────────────────────────────────────── */
+
+.ttt-difficulty {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ttt-diff-btn {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 2px solid var(--toggle-border);
+  background: var(--toggle-bg);
+  color: var(--color);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.ttt-diff-btn:hover {
+  background: var(--toggle-bg-hover);
+  transform: translateY(-1px);
+}
+
+.ttt-diff-btn--active {
+  border-color: var(--link-color);
+  background: var(--nav-active-bg);
+  color: var(--link-color);
+  font-weight: 700;
+}
+
+/* ── Scoreboard ───────────────────────────────────────────────────────────── */
+
+.ttt-scoreboard {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 1rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.ttt-score-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1.25rem;
+}
+
+.ttt-score-cell + .ttt-score-cell {
+  border-left: 1px solid var(--nav-border);
+}
+
+.ttt-score-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+.ttt-score-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--link-color);
+}
+
+.ttt-score-cell--draws .ttt-score-value {
+  color: var(--color);
+  opacity: 0.5;
+}
+
+/* ── Status ───────────────────────────────────────────────────────────────── */
+
+.ttt-status {
+  font-size: 1.15rem;
+  font-weight: 600;
+  min-height: 1.75rem;
+  margin: 0;
+  transition: color 0.25s;
+}
+
+.ttt-status--win  { color: #4caf50; }
+.ttt-status--lose { color: #f44336; }
+.ttt-status--draw { color: #ff9800; }
+
+/* ── Board ────────────────────────────────────────────────────────────────── */
+
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+  background: var(--nav-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+/* Each square */
+.ttt-square {
+  width: 110px;
+  height: 110px;
+  border-radius: 12px;
+  border: 2px solid var(--nav-border);
+  background: var(--card-bg);
+  font-size: 2.8rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  color: var(--color);
+  /* prevent layout shift when text appears */
+  line-height: 1;
+}
+
+.ttt-square:not(:disabled):hover {
+  background: var(--toggle-bg-hover);
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ttt-square:disabled {
+  cursor: default;
+}
+
+.ttt-square--x {
+  color: var(--link-color);
+}
+
+.ttt-square--o {
+  color: #f06292;
+}
+
+/* Winning squares pulse + highlight */
+.ttt-square--win {
+  background: rgba(76, 175, 80, 0.18) !important;
+  border-color: #4caf50 !important;
+  animation: win-pulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes win-pulse {
+  from { box-shadow: 0 0 0   rgba(76, 175, 80, 0.4); }
+  to   { box-shadow: 0 0 18px rgba(76, 175, 80, 0.9); }
+}
+
+/* ── Action buttons ───────────────────────────────────────────────────────── */
+
+.ttt-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ttt-btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.1s, box-shadow 0.2s, background 0.2s;
+}
+
+.ttt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.ttt-btn--primary {
+  background: var(--link-color);
+  color: #000;
+  border-color: var(--link-color);
+}
+
+.ttt-btn--secondary {
+  background: var(--toggle-bg);
+  color: var(--color);
+  border-color: var(--toggle-border);
+}
+
+.ttt-btn--secondary:hover {
+  background: var(--toggle-bg-hover);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 420px) {
+  .ttt-square {
+    width: 88px;
+    height: 88px;
+    font-size: 2.2rem;
+  }
+
+  .ttt-score-cell {
+    padding: 0 0.75rem;
+  }
+}
+
