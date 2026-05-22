@@ -8,6 +8,7 @@ import { useRouter } from '@/hooks/useRouter';
 import { ContactPage } from '@/pages/ContactPage';
 import { HomePage } from '@/pages/HomePage';
 import { MattPage } from '@/pages/MattPage';
+import { TicTacToePage } from '@/pages/TicTacToePage';
 import { TimeZonePage } from '@/pages/TimeZonePage';
 import { WeatherPage } from '@/pages/WeatherPage';
 
@@ -22,6 +23,8 @@ function App() {
         return <WeatherPage />;
       case '/timezones':
         return <TimeZonePage />;
+      case '/tictactoe':
+        return <TicTacToePage />;
       case '/matt':
         return <MattPage />;
       case '/contact':

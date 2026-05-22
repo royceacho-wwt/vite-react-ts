@@ -1,0 +1,220 @@
+/* ── Tic Tac Toe Page ─────────────────────────────────────────────────────── */
+
+.ttt-page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ttt-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--color);
+}
+
+.ttt-subtitle {
+  color: var(--color);
+  opacity: 0.65;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ── Scoreboard ───────────────────────────────────────────────────────────── */
+
+.ttt-scoreboard {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 380px;
+}
+
+.ttt-score {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 0.875rem;
+  padding: 0.875rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  transition: transform 0.2s ease;
+}
+
+.ttt-score-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color);
+  opacity: 0.55;
+}
+
+.ttt-score-value {
+  font-size: 2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--color);
+}
+
+.ttt-score--x .ttt-score-value {
+  color: #f87171; /* soft red for X */
+}
+
+.ttt-score--o .ttt-score-value {
+  color: #60a5fa; /* soft blue for O */
+}
+
+[data-theme='light'] .ttt-score--x .ttt-score-value {
+  color: #dc2626;
+}
+
+[data-theme='light'] .ttt-score--o .ttt-score-value {
+  color: #2563eb;
+}
+
+/* ── Status ───────────────────────────────────────────────────────────────── */
+
+.ttt-status {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+  min-height: 1.7rem;
+  text-align: center;
+}
+
+.ttt-status--gameover {
+  color: var(--link-color);
+  font-size: 1.3rem;
+}
+
+/* ── Board ────────────────────────────────────────────────────────────────── */
+
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 360px;
+  margin-bottom: 1.75rem;
+}
+
+/* ── Cells ────────────────────────────────────────────────────────────────── */
+
+.ttt-cell {
+  aspect-ratio: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 1rem;
+  font-size: clamp(2rem, 8vw, 3.25rem);
+  font-weight: 900;
+  cursor: pointer;
+  color: var(--color);
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ttt-cell:not(:disabled):hover {
+  background: var(--nav-active-bg);
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.ttt-cell:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.ttt-cell--x {
+  color: #f87171;
+}
+
+.ttt-cell--o {
+  color: #60a5fa;
+}
+
+[data-theme='light'] .ttt-cell--x {
+  color: #dc2626;
+}
+
+[data-theme='light'] .ttt-cell--o {
+  color: #2563eb;
+}
+
+.ttt-cell--winning {
+  background: var(--nav-active-bg);
+  border-color: var(--link-color);
+  box-shadow: 0 0 0 2px var(--link-color), 0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: scale(1.06);
+  animation: ttt-pop 0.25s ease;
+}
+
+@keyframes ttt-pop {
+  0% {
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.06);
+  }
+}
+
+/* ── Action buttons ───────────────────────────────────────────────────────── */
+
+.ttt-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ttt-btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--nav-border);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.ttt-btn:hover {
+  transform: translateY(-1px);
+}
+
+.ttt-btn--primary {
+  background: var(--link-color);
+  color: #fff;
+  border-color: var(--link-color);
+}
+
+.ttt-btn--primary:hover {
+  opacity: 0.88;
+}
+
+.ttt-btn--secondary {
+  background: var(--card-bg);
+  color: var(--color);
+}
+
+.ttt-btn--secondary:hover {
+  background: var(--nav-active-bg);
+}
+
