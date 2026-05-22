@@ -15,6 +15,7 @@ const CITIES: CityConfig[] = [
   { name: 'Detroit', state: 'Michigan', timezone: 'America/Detroit', emoji: '🏙️' },
   { name: 'St. Louis', state: 'Missouri', timezone: 'America/Chicago', emoji: '🌉' },
   { name: 'Honolulu', state: 'Hawaii', timezone: 'Pacific/Honolulu', emoji: '🌺' },
+  { name: 'Paris', state: 'France', timezone: 'Europe/Paris', emoji: '🗼' },
 ];
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
@@ -135,7 +136,7 @@ export function TimeZonePage() {
   return (
     <main className="tz-page">
       <h1 className="tz-title">🕐 Time Zones</h1>
-      <p className="tz-subtitle">Live clocks for cities across the United States.</p>
+      <p className="tz-subtitle">Live clocks for cities across the United States and beyond.</p>
 
       <section className="tz-grid" aria-label="City clocks">
         {CITIES.map((city) => (

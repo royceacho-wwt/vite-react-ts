@@ -8,9 +8,10 @@ import { TimeZonePage } from '@/pages/TimeZonePage';
 /**
  * Freeze Date to a fixed UTC instant so time-zone assertions are deterministic.
  * 2024-07-04 18:00:00 UTC
- *   Detroit  (America/Detroit  / EDT = UTC−4) → 14:00:00 PM
- *   St. Louis (America/Chicago / CDT = UTC−5) → 13:00:00 PM
+ *   Detroit   (America/Detroit  / EDT = UTC−4)  → 02:00:00 PM
+ *   St. Louis (America/Chicago  / CDT = UTC−5)  → 01:00:00 PM
  *   Honolulu  (Pacific/Honolulu / HST = UTC−10) → 08:00:00 AM
+ *   Paris     (Europe/Paris     / CEST = UTC+2) → 08:00:00 PM
  */
 const FIXED_UTC = new Date('2024-07-04T18:00:00Z').getTime();
 
@@ -34,13 +35,13 @@ describe('TimeZonePage', () => {
 
   it('renders the subtitle', () => {
     render(<TimeZonePage />);
-    expect(screen.getByText(/Live clocks for cities across the United States/i)).toBeDefined();
+    expect(screen.getByText(/Live clocks for cities across the United States and beyond/i)).toBeDefined();
   });
 
-  it('renders exactly three city cards (article elements)', () => {
+  it('renders exactly four city cards (article elements)', () => {
     render(<TimeZonePage />);
     const cards = screen.getAllByRole('article');
-    expect(cards.length).toBe(3);
+    expect(cards.length).toBe(4);
   });
 
   it('shows Detroit as the first card', () => {
@@ -58,11 +59,17 @@ describe('TimeZonePage', () => {
     expect(screen.getByText('Honolulu')).toBeDefined();
   });
 
-  it('shows the state label for each city', () => {
+  it('shows Paris as the fourth card', () => {
+    render(<TimeZonePage />);
+    expect(screen.getByText('Paris')).toBeDefined();
+  });
+
+  it('shows the state/country label for each city', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('Michigan')).toBeDefined();
     expect(screen.getByText('Missouri')).toBeDefined();
     expect(screen.getByText('Hawaii')).toBeDefined();
+    expect(screen.getByText('France')).toBeDefined();
   });
 
   it('renders an emoji for each city', () => {
@@ -70,6 +77,7 @@ describe('TimeZonePage', () => {
     expect(screen.getByRole('img', { name: 'Detroit' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'St. Louis' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Honolulu' })).toBeDefined();
+    expect(screen.getByRole('img', { name: 'Paris' })).toBeDefined();
   });
 
   /* ── Clock values at fixed UTC instant ──────────────────────────────────── */
@@ -78,7 +86,7 @@ describe('TimeZonePage', () => {
     render(<TimeZonePage />);
     // Each clock has aria-live="polite" and an aria-label containing "Current time in"
     const clocks = screen.getAllByLabelText(/Current time in/i);
-    expect(clocks.length).toBe(3);
+    expect(clocks.length).toBe(4);
     clocks.forEach((clock) => {
       // Should contain AM or PM
       expect(clock.getAttribute('aria-label')).toMatch(/AM|PM/i);
@@ -101,6 +109,12 @@ describe('TimeZonePage', () => {
     render(<TimeZonePage />);
     const honoluluClock = screen.getByLabelText(/Current time in Honolulu/i);
     expect(honoluluClock.getAttribute('aria-label')).toContain('08:00:00 AM');
+  });
+
+  it('Paris clock reads 08:00:00 PM at the fixed UTC instant', () => {
+    render(<TimeZonePage />);
+    const parisClock = screen.getByLabelText(/Current time in Paris/i);
+    expect(parisClock.getAttribute('aria-label')).toContain('08:00:00 PM');
   });
 
   /* ── Interval tick ───────────────────────────────────────────────────────── */
