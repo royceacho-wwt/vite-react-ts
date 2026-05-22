@@ -16,14 +16,6 @@ test('increments count', () => {
   expect(screen.getByText('Count is: 1')).toBeDefined();
 });
 
-test('renders theme toggle button', () => {
-  render(<App />);
-
-  // Toggle should be present (label depends on initial theme; both labels are valid)
-  const toggle = screen.getByRole('button', { name: /switch to (dark|light) mode/i });
-  expect(toggle).toBeDefined();
-});
-
 test('clicking theme toggle changes its label', () => {
   render(<App />);
 
