@@ -12,7 +12,7 @@ export function HomePage({ count, onIncrement }: HomePageProps) {
     <main className="home-page">
       <header className="home-header">
         <img src={logo} className="home-logo" alt="App logo" />
-        <p>Hello, Royce!</p>
+        <p>What up, Royce!</p>
         <p>
           <button type="button" onClick={onIncrement}>
             Count is: {count}
