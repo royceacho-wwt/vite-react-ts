@@ -8,12 +8,13 @@ import { TimeZonePage } from '@/pages/TimeZonePage';
 /**
  * Freeze Date to a fixed UTC instant so time-zone assertions are deterministic.
  * 2024-07-04 18:00:00 UTC
- *   New York  (America/New_York / EDT = UTC−4)  → 02:00:00 PM
- *   Detroit   (America/Detroit  / EDT = UTC−4)  → 02:00:00 PM
- *   St. Louis (America/Chicago  / CDT = UTC−5)  → 01:00:00 PM
- *   Boise     (America/Boise    / MDT = UTC−6)  → 12:00:00 PM
- *   Honolulu  (Pacific/Honolulu / HST = UTC−10) → 08:00:00 AM
- *   Paris     (Europe/Paris     / CEST = UTC+2) → 08:00:00 PM
+ *   New York  (America/New_York / EDT  = UTC−4)  → 02:00:00 PM
+ *   Detroit   (America/Detroit  / EDT  = UTC−4)  → 02:00:00 PM
+ *   St. Louis (America/Chicago  / CDT  = UTC−5)  → 01:00:00 PM
+ *   Boise     (America/Boise    / MDT  = UTC−6)  → 12:00:00 PM
+ *   Honolulu  (Pacific/Honolulu / HST  = UTC−10) → 08:00:00 AM
+ *   Paris     (Europe/Paris     / CEST = UTC+2)  → 08:00:00 PM
+ *   Cairo     (Africa/Cairo     / EEST = UTC+3)  → 09:00:00 PM  (Egypt re-introduced DST in 2023)
  */
 const FIXED_UTC = new Date('2024-07-04T18:00:00Z').getTime();
 
@@ -40,10 +41,10 @@ describe('TimeZonePage', () => {
     expect(screen.getByText(/Live clocks for cities across the United States and beyond/i)).toBeDefined();
   });
 
-  it('renders exactly six city cards (article elements)', () => {
+  it('renders exactly seven city cards (article elements)', () => {
     render(<TimeZonePage />);
     const cards = screen.getAllByRole('article');
-    expect(cards.length).toBe(6);
+    expect(cards.length).toBe(7);
   });
 
   it('shows New York City as the first card', () => {
@@ -76,6 +77,11 @@ describe('TimeZonePage', () => {
     expect(screen.getByText('Paris')).toBeDefined();
   });
 
+  it('shows Cairo as the seventh card', () => {
+    render(<TimeZonePage />);
+    expect(screen.getByText('Cairo')).toBeDefined();
+  });
+
   it('shows the state/country label for each city', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('New York')).toBeDefined();
@@ -84,6 +90,7 @@ describe('TimeZonePage', () => {
     expect(screen.getByText('Idaho')).toBeDefined();
     expect(screen.getByText('Hawaii')).toBeDefined();
     expect(screen.getByText('France')).toBeDefined();
+    expect(screen.getByText('Egypt')).toBeDefined();
   });
 
   it('renders an emoji for each city', () => {
@@ -94,6 +101,7 @@ describe('TimeZonePage', () => {
     expect(screen.getByRole('img', { name: 'Boise' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Honolulu' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Paris' })).toBeDefined();
+    expect(screen.getByRole('img', { name: 'Cairo' })).toBeDefined();
   });
 
   /* ── Clock values at fixed UTC instant ──────────────────────────────────── */
@@ -102,7 +110,7 @@ describe('TimeZonePage', () => {
     render(<TimeZonePage />);
     // Each clock has aria-live="polite" and an aria-label containing "Current time in"
     const clocks = screen.getAllByLabelText(/Current time in/i);
-    expect(clocks.length).toBe(6);
+    expect(clocks.length).toBe(7);
     clocks.forEach((clock) => {
       // Should contain AM or PM
       expect(clock.getAttribute('aria-label')).toMatch(/AM|PM/i);
@@ -145,6 +153,12 @@ describe('TimeZonePage', () => {
     expect(parisClock.getAttribute('aria-label')).toContain('08:00:00 PM');
   });
 
+  it('Cairo clock reads 09:00:00 PM at the fixed UTC instant (EEST = UTC+3)', () => {
+    render(<TimeZonePage />);
+    const cairoClock = screen.getByLabelText(/Current time in Cairo/i);
+    expect(cairoClock.getAttribute('aria-label')).toContain('09:00:00 PM');
+  });
+
   /* ── Interval tick ───────────────────────────────────────────────────────── */
 
   it('updates the New York City clock after one second', () => {
@@ -182,6 +196,19 @@ describe('TimeZonePage', () => {
     });
 
     const clockAfter = screen.getByLabelText(/Current time in Boise/i).getAttribute('aria-label');
+    // After 1 second the time should have changed (seconds digit increments)
+    expect(clockAfter).not.toBe(clockBefore);
+  });
+
+  it('updates the Cairo clock after one second', () => {
+    render(<TimeZonePage />);
+    const clockBefore = screen.getByLabelText(/Current time in Cairo/i).getAttribute('aria-label');
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    const clockAfter = screen.getByLabelText(/Current time in Cairo/i).getAttribute('aria-label');
     // After 1 second the time should have changed (seconds digit increments)
     expect(clockAfter).not.toBe(clockBefore);
   });

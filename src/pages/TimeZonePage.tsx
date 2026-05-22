@@ -18,6 +18,7 @@ const CITIES: CityConfig[] = [
   { name: 'Boise', state: 'Idaho', timezone: 'America/Boise', emoji: '🥔' },
   { name: 'Honolulu', state: 'Hawaii', timezone: 'Pacific/Honolulu', emoji: '🌺' },
   { name: 'Paris', state: 'France', timezone: 'Europe/Paris', emoji: '🗼' },
+  { name: 'Cairo', state: 'Egypt', timezone: 'Africa/Cairo', emoji: '🐪' },
 ];
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
