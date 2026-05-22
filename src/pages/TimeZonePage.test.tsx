@@ -8,6 +8,7 @@ import { TimeZonePage } from '@/pages/TimeZonePage';
 /**
  * Freeze Date to a fixed UTC instant so time-zone assertions are deterministic.
  * 2024-07-04 18:00:00 UTC
+ *   New York  (America/New_York / EDT = UTC−4)  → 02:00:00 PM
  *   Detroit   (America/Detroit  / EDT = UTC−4)  → 02:00:00 PM
  *   St. Louis (America/Chicago  / CDT = UTC−5)  → 01:00:00 PM
  *   Honolulu  (Pacific/Honolulu / HST = UTC−10) → 08:00:00 AM
@@ -38,34 +39,40 @@ describe('TimeZonePage', () => {
     expect(screen.getByText(/Live clocks for cities across the United States and beyond/i)).toBeDefined();
   });
 
-  it('renders exactly four city cards (article elements)', () => {
+  it('renders exactly five city cards (article elements)', () => {
     render(<TimeZonePage />);
     const cards = screen.getAllByRole('article');
-    expect(cards.length).toBe(4);
+    expect(cards.length).toBe(5);
   });
 
-  it('shows Detroit as the first card', () => {
+  it('shows New York City as the first card', () => {
+    render(<TimeZonePage />);
+    expect(screen.getByText('New York City')).toBeDefined();
+  });
+
+  it('shows Detroit as the second card', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('Detroit')).toBeDefined();
   });
 
-  it('shows St. Louis as the second card', () => {
+  it('shows St. Louis as the third card', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('St. Louis')).toBeDefined();
   });
 
-  it('shows Honolulu as the third card', () => {
+  it('shows Honolulu as the fourth card', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('Honolulu')).toBeDefined();
   });
 
-  it('shows Paris as the fourth card', () => {
+  it('shows Paris as the fifth card', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('Paris')).toBeDefined();
   });
 
   it('shows the state/country label for each city', () => {
     render(<TimeZonePage />);
+    expect(screen.getByText('New York')).toBeDefined();
     expect(screen.getByText('Michigan')).toBeDefined();
     expect(screen.getByText('Missouri')).toBeDefined();
     expect(screen.getByText('Hawaii')).toBeDefined();
@@ -74,6 +81,7 @@ describe('TimeZonePage', () => {
 
   it('renders an emoji for each city', () => {
     render(<TimeZonePage />);
+    expect(screen.getByRole('img', { name: 'New York City' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Detroit' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'St. Louis' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Honolulu' })).toBeDefined();
@@ -86,11 +94,17 @@ describe('TimeZonePage', () => {
     render(<TimeZonePage />);
     // Each clock has aria-live="polite" and an aria-label containing "Current time in"
     const clocks = screen.getAllByLabelText(/Current time in/i);
-    expect(clocks.length).toBe(4);
+    expect(clocks.length).toBe(5);
     clocks.forEach((clock) => {
       // Should contain AM or PM
       expect(clock.getAttribute('aria-label')).toMatch(/AM|PM/i);
     });
+  });
+
+  it('New York City clock reads 02:00:00 PM at the fixed UTC instant', () => {
+    render(<TimeZonePage />);
+    const nycClock = screen.getByLabelText(/Current time in New York City/i);
+    expect(nycClock.getAttribute('aria-label')).toContain('02:00:00 PM');
   });
 
   it('Detroit clock reads 02:00:00 PM at the fixed UTC instant', () => {
@@ -118,6 +132,19 @@ describe('TimeZonePage', () => {
   });
 
   /* ── Interval tick ───────────────────────────────────────────────────────── */
+
+  it('updates the New York City clock after one second', () => {
+    render(<TimeZonePage />);
+    const clockBefore = screen.getByLabelText(/Current time in New York City/i).getAttribute('aria-label');
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    const clockAfter = screen.getByLabelText(/Current time in New York City/i).getAttribute('aria-label');
+    // After 1 second the time should have changed (seconds digit increments)
+    expect(clockAfter).not.toBe(clockBefore);
+  });
 
   it('updates the Detroit clock after one second', () => {
     render(<TimeZonePage />);

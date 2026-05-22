@@ -12,6 +12,7 @@ interface CityConfig {
 }
 
 const CITIES: CityConfig[] = [
+  { name: 'New York City', state: 'New York', timezone: 'America/New_York', emoji: '🗽' },
   { name: 'Detroit', state: 'Michigan', timezone: 'America/Detroit', emoji: '🏙️' },
   { name: 'St. Louis', state: 'Missouri', timezone: 'America/Chicago', emoji: '🌉' },
   { name: 'Honolulu', state: 'Hawaii', timezone: 'Pacific/Honolulu', emoji: '🌺' },
