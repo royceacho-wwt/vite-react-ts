@@ -1,0 +1,202 @@
+/* ── Time Zone Page ───────────────────────────────────────────────────────── */
+
+.tz-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.tz-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--color);
+}
+
+.tz-subtitle {
+  color: var(--color);
+  opacity: 0.65;
+  margin-top: 0;
+  margin-bottom: 2.25rem;
+  font-size: 1rem;
+}
+
+/* ── Cards grid ───────────────────────────────────────────────────────────── */
+
+.tz-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .tz-grid {
+    grid-template-columns: 1fr;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
+/*
+  Spotlight effect: identical technique to WeatherPage's weather-card.
+  ::before  — radial gradient glow that follows the cursor
+  ::after   — conic gradient shimmer border
+*/
+
+.tz-card {
+  position: relative;
+  overflow: hidden;
+
+  background: var(--card-bg);
+  border-radius: 1.25rem;
+  padding: 2rem 1.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-align: center;
+
+  box-shadow: 0 0 0 1px var(--nav-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-opacity: 0;
+  --border-opacity: 0;
+}
+
+.tz-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 0 0 1px var(--nav-border),
+    0 12px 32px rgba(0, 0, 0, 0.25);
+  --spotlight-opacity: 1;
+  --border-opacity: 1;
+}
+
+/* Spotlight glow */
+.tz-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+
+  background: radial-gradient(
+    circle 160px at var(--mouse-x) var(--mouse-y),
+    var(--spotlight-color, rgba(97, 218, 251, 0.18)) 0%,
+    transparent 70%
+  );
+
+  opacity: var(--spotlight-opacity);
+  transition: opacity 0.35s ease;
+}
+
+/* Shimmer border */
+.tz-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+
+  background: conic-gradient(
+    from 0deg at var(--mouse-x) var(--mouse-y),
+    transparent 0deg,
+    var(--border-highlight, rgba(97, 218, 251, 0.7)) 60deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+
+  opacity: var(--border-opacity);
+  transition: opacity 0.35s ease;
+}
+
+/* Keep card content above pseudo-elements */
+.tz-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light-mode tint overrides */
+[data-theme='light'] .tz-card {
+  --spotlight-color: rgba(0, 102, 204, 0.1);
+  --border-highlight: rgba(0, 102, 204, 0.55);
+}
+
+/* ── Card content ─────────────────────────────────────────────────────────── */
+
+.tz-card-emoji {
+  font-size: 2.75rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.tz-card-city {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color);
+  letter-spacing: -0.01em;
+}
+
+.tz-card-state {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--color);
+  opacity: 0.55;
+  margin-top: -0.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.tz-card-clock {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  margin: 0.25rem 0;
+}
+
+.tz-card-time {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--link-color);
+  line-height: 1;
+}
+
+.tz-card-meridiem {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color);
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tz-card-date {
+  font-size: 0.82rem;
+  color: var(--color);
+  opacity: 0.65;
+  margin-top: 0.1rem;
+}
+
+.tz-card-offset {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--link-color);
+  opacity: 0.8;
+  margin-top: 0.15rem;
+  letter-spacing: 0.03em;
+}
+

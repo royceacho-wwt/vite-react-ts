@@ -7,6 +7,7 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
 import { HomePage } from '@/pages/HomePage';
 import { MattPage } from '@/pages/MattPage';
+import { TimeZonePage } from '@/pages/TimeZonePage';
 import { WeatherPage } from '@/pages/WeatherPage';
 
 function App() {
@@ -18,6 +19,8 @@ function App() {
     switch (path) {
       case '/weather':
         return <WeatherPage />;
+      case '/timezones':
+        return <TimeZonePage />;
       case '/matt':
         return <MattPage />;
       case '/':
