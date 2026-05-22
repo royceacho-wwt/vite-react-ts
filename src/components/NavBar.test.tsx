@@ -11,13 +11,9 @@ const defaultProps = {
 };
 
 describe('NavBar', () => {
-  it('renders the brand name', () => {
+  it('renders the brand name and all navigation links', () => {
     render(<NavBar {...defaultProps} />);
     expect(screen.getByText(/MyApp/i)).toBeDefined();
-  });
-
-  it('renders Home, Weather, Time Zones, Tic Tac Toe, and Contact links', () => {
-    render(<NavBar {...defaultProps} />);
     expect(screen.getByRole('link', { name: /home/i })).toBeDefined();
     expect(screen.getByRole('link', { name: /weather/i })).toBeDefined();
     expect(screen.getByRole('link', { name: /time zones/i })).toBeDefined();
@@ -25,80 +21,38 @@ describe('NavBar', () => {
     expect(screen.getByRole('link', { name: /contact/i })).toBeDefined();
   });
 
-  it('marks the Home link as active when path is "/"', () => {
-    render(<NavBar {...defaultProps} currentPath="/" />);
-    const homeLink = screen.getByRole('link', { name: /home/i });
-    expect(homeLink.className).toContain('navbar-link--active');
+  it.each([
+    ['/', /home/i],
+    ['/weather', /weather/i],
+    ['/timezones', /time zones/i],
+    ['/tictactoe', /tic tac toe/i],
+    ['/contact', /contact/i],
+  ])('marks the correct link as active for path "%s"', (path, linkName) => {
+    render(<NavBar {...defaultProps} currentPath={path} />);
+    const activeLink = screen.getByRole('link', { name: linkName });
+    expect(activeLink.className).toContain('navbar-link--active');
+    expect(activeLink.getAttribute('aria-current')).toBe('page');
   });
 
-  it('marks the Weather link as active when path is "/weather"', () => {
-    render(<NavBar {...defaultProps} currentPath="/weather" />);
-    const weatherLink = screen.getByRole('link', { name: /weather/i });
-    expect(weatherLink.className).toContain('navbar-link--active');
-  });
-
-  it('marks the Time Zones link as active when path is "/timezones"', () => {
-    render(<NavBar {...defaultProps} currentPath="/timezones" />);
-    const tzLink = screen.getByRole('link', { name: /time zones/i });
-    expect(tzLink.className).toContain('navbar-link--active');
-  });
-
-  it('marks the Tic Tac Toe link as active when path is "/tictactoe"', () => {
-    render(<NavBar {...defaultProps} currentPath="/tictactoe" />);
-    const tttLink = screen.getByRole('link', { name: /tic tac toe/i });
-    expect(tttLink.className).toContain('navbar-link--active');
-  });
-
-  it('marks the Contact link as active when path is "/contact"', () => {
-    render(<NavBar {...defaultProps} currentPath="/contact" />);
-    const contactLink = screen.getByRole('link', { name: /contact/i });
-    expect(contactLink.className).toContain('navbar-link--active');
-  });
-
-  it('calls onNavigate with "/" when Home link is clicked', () => {
+  it.each([
+    [/home/i, '/'],
+    [/weather/i, '/weather'],
+    [/time zones/i, '/timezones'],
+    [/tic tac toe/i, '/tictactoe'],
+    [/contact/i, '/contact'],
+  ])('calls onNavigate with the correct path when "%s" link is clicked', (linkName, expectedPath) => {
     const onNavigate = vi.fn();
     render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByRole('link', { name: /home/i }));
-    expect(onNavigate).toHaveBeenCalledWith('/');
+    fireEvent.click(screen.getByRole('link', { name: linkName }));
+    expect(onNavigate).toHaveBeenCalledWith(expectedPath);
   });
 
-  it('calls onNavigate with "/weather" when Weather link is clicked', () => {
-    const onNavigate = vi.fn();
-    render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByRole('link', { name: /weather/i }));
-    expect(onNavigate).toHaveBeenCalledWith('/weather');
-  });
-
-  it('calls onNavigate with "/timezones" when Time Zones link is clicked', () => {
-    const onNavigate = vi.fn();
-    render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByRole('link', { name: /time zones/i }));
-    expect(onNavigate).toHaveBeenCalledWith('/timezones');
-  });
-
-  it('calls onNavigate with "/tictactoe" when Tic Tac Toe link is clicked', () => {
-    const onNavigate = vi.fn();
-    render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByRole('link', { name: /tic tac toe/i }));
-    expect(onNavigate).toHaveBeenCalledWith('/tictactoe');
-  });
-
-  it('calls onNavigate with "/contact" when Contact link is clicked', () => {
-    const onNavigate = vi.fn();
-    render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByRole('link', { name: /contact/i }));
-    expect(onNavigate).toHaveBeenCalledWith('/contact');
-  });
-
-  it('renders the theme toggle button', () => {
-    render(<NavBar {...defaultProps} />);
-    expect(screen.getByRole('button', { name: /switch to (dark|light) mode/i })).toBeDefined();
-  });
-
-  it('calls onToggleTheme when theme button is clicked', () => {
+  it('renders the theme toggle and calls onToggleTheme when clicked', () => {
     const onToggleTheme = vi.fn();
     render(<NavBar {...defaultProps} onToggleTheme={onToggleTheme} />);
-    fireEvent.click(screen.getByRole('button', { name: /switch to (dark|light) mode/i }));
+    const toggle = screen.getByRole('button', { name: /switch to (dark|light) mode/i });
+    expect(toggle).toBeDefined();
+    fireEvent.click(toggle);
     expect(onToggleTheme).toHaveBeenCalledTimes(1);
   });
 });

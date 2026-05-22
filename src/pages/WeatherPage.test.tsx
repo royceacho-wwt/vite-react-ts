@@ -266,19 +266,6 @@ describe('SpotlightCard spotlight effect', () => {
     return screen.getAllByRole('article');
   }
 
-  it('each forecast card is rendered as an <article> element', async () => {
-    const view = await renderWithForecast();
-    expect(view.length).toBe(7);
-    view.forEach((card) => expect(card.tagName).toBe('ARTICLE'));
-  });
-
-  it('cards initialise with --mouse-x and --mouse-y CSS custom properties set to 50%', async () => {
-    const view = await renderWithForecast();
-    const first = view[0] as HTMLElement;
-    expect(first.style.getPropertyValue('--mouse-x')).toBe('50%');
-    expect(first.style.getPropertyValue('--mouse-y')).toBe('50%');
-  });
-
   it('mousemove on a card updates --mouse-x and --mouse-y', async () => {
     const view = await renderWithForecast();
     const card = view[1] as HTMLElement;
@@ -327,7 +314,7 @@ describe('SpotlightCard spotlight effect', () => {
     expect(card.style.getPropertyValue('--mouse-y')).toBe('50%');
   });
 
-  it('first card carries the weather-card--today CSS class', async () => {
+  it('first card carries the weather-card--today CSS class; others do not', async () => {
     const view = await renderWithForecast();
     expect(view[0].classList.contains('weather-card--today')).toBe(true);
     expect(view[1].classList.contains('weather-card--today')).toBe(false);

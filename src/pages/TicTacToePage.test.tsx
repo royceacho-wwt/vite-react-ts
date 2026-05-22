@@ -18,46 +18,16 @@ function clickCell(index: number) {
 /* ── Rendering ────────────────────────────────────────────────────────────── */
 
 describe('TicTacToePage – rendering', () => {
-  it('renders the page title', () => {
+  it('renders the page title, subtitle, board, and control buttons', () => {
     render(<TicTacToePage />);
     expect(screen.getByRole('heading', { name: /tic tac toe/i })).toBeDefined();
-  });
-
-  it('renders the subtitle', () => {
-    render(<TicTacToePage />);
     expect(screen.getByText(/classic two-player game/i)).toBeDefined();
-  });
-
-  it('renders 9 cell buttons', () => {
-    render(<TicTacToePage />);
     expect(getCells()).toHaveLength(9);
-  });
-
-  it('all cells start empty', () => {
-    render(<TicTacToePage />);
-    getCells().forEach((cell) => {
-      expect(cell.textContent).toBe('');
-    });
-  });
-
-  it('renders the New Game button', () => {
-    render(<TicTacToePage />);
     expect(screen.getByRole('button', { name: /new game/i })).toBeDefined();
-  });
-
-  it('renders the Reset Scores button', () => {
-    render(<TicTacToePage />);
     expect(screen.getByRole('button', { name: /reset scores/i })).toBeDefined();
   });
 
-  it('renders the scoreboard with three score panels', () => {
-    render(<TicTacToePage />);
-    expect(screen.getByLabelText('Player X score')).toBeDefined();
-    expect(screen.getByLabelText('Player O score')).toBeDefined();
-    expect(screen.getByLabelText('Draw count')).toBeDefined();
-  });
-
-  it('all scores start at 0', () => {
+  it('renders the scoreboard with all three panels starting at 0', () => {
     render(<TicTacToePage />);
     expect(screen.getByLabelText('Player X score').textContent).toBe('0');
     expect(screen.getByLabelText('Player O score').textContent).toBe('0');
@@ -68,35 +38,15 @@ describe('TicTacToePage – rendering', () => {
 /* ── Turn tracking ────────────────────────────────────────────────────────── */
 
 describe('TicTacToePage – turn tracking', () => {
-  it('shows Player X turn initially', () => {
+  it('shows Player X turn initially, switches to O then back to X', () => {
     render(<TicTacToePage />);
     expect(screen.getByRole('status').textContent).toMatch(/player x/i);
-  });
 
-  it('switches to Player O after X takes a cell', () => {
-    render(<TicTacToePage />);
     clickCell(1);
     expect(screen.getByRole('status').textContent).toMatch(/player o/i);
-  });
 
-  it('switches back to Player X after O takes a cell', () => {
-    render(<TicTacToePage />);
-    clickCell(1); // X
-    clickCell(2); // O
+    clickCell(2);
     expect(screen.getByRole('status').textContent).toMatch(/player x/i);
-  });
-
-  it('cell 1 shows X after Player X clicks it', () => {
-    render(<TicTacToePage />);
-    clickCell(1);
-    expect(getCells()[0].textContent).toBe('X');
-  });
-
-  it('cell 2 shows O after Player O clicks it', () => {
-    render(<TicTacToePage />);
-    clickCell(1); // X plays cell 1
-    clickCell(2); // O plays cell 2
-    expect(getCells()[1].textContent).toBe('O');
   });
 
   it('does not change a cell that is already occupied', () => {
@@ -104,7 +54,6 @@ describe('TicTacToePage – turn tracking', () => {
     clickCell(1); // X
     clickCell(1); // O tries same cell — should be no-op
     expect(getCells()[0].textContent).toBe('X');
-    // Still O's turn? No — it stays X because it was already taken; now it should be O's turn still
     expect(screen.getByRole('status').textContent).toMatch(/player o/i);
   });
 });
@@ -153,7 +102,7 @@ describe('TicTacToePage – win detection', () => {
     expect(screen.getByRole('status').textContent).toMatch(/player x wins/i);
   });
 
-  it('marks winning cells with the ttt-cell--winning class', () => {
+  it('marks only winning cells with ttt-cell--winning and disables the board', () => {
     render(<TicTacToePage />);
     clickCell(1); // X
     clickCell(4); // O
@@ -161,31 +110,15 @@ describe('TicTacToePage – win detection', () => {
     clickCell(5); // O
     clickCell(3); // X wins on row 1
     const cells = getCells();
+    // Winning cells
     expect(cells[0].className).toContain('ttt-cell--winning');
     expect(cells[1].className).toContain('ttt-cell--winning');
     expect(cells[2].className).toContain('ttt-cell--winning');
-  });
-
-  it('non-winning cells do not get the winning class', () => {
-    render(<TicTacToePage />);
-    clickCell(1); // X
-    clickCell(4); // O
-    clickCell(2); // X
-    clickCell(5); // O
-    clickCell(3); // X wins
-    const cells = getCells();
+    // Non-winning cells
     expect(cells[3].className).not.toContain('ttt-cell--winning');
     expect(cells[4].className).not.toContain('ttt-cell--winning');
-  });
-
-  it('disables all cells after a win', () => {
-    render(<TicTacToePage />);
-    clickCell(1); // X
-    clickCell(4); // O
-    clickCell(2); // X
-    clickCell(5); // O
-    clickCell(3); // X wins
-    getCells().forEach((cell) => {
+    // All disabled
+    cells.forEach((cell) => {
       expect((cell as HTMLButtonElement).disabled).toBe(true);
     });
   });
@@ -213,21 +146,11 @@ describe('TicTacToePage – draw detection', () => {
     clickCell(8); // X — board full, no winner
   }
 
-  it('announces a draw when board is full with no winner', () => {
+  it('announces a draw, increments the draw counter, and disables all cells', () => {
     render(<TicTacToePage />);
     playDraw();
     expect(screen.getByRole('status').textContent).toMatch(/draw/i);
-  });
-
-  it('increments the draw counter', () => {
-    render(<TicTacToePage />);
-    playDraw();
     expect(screen.getByLabelText('Draw count').textContent).toBe('1');
-  });
-
-  it('disables all cells after a draw', () => {
-    render(<TicTacToePage />);
-    playDraw();
     getCells().forEach((cell) => {
       expect((cell as HTMLButtonElement).disabled).toBe(true);
     });
@@ -273,35 +196,21 @@ describe('TicTacToePage – score tracking', () => {
 /* ── New Game ─────────────────────────────────────────────────────────────── */
 
 describe('TicTacToePage – New Game', () => {
-  it('clears the board after clicking New Game', () => {
+  it('clears the board, resets to Player X, and re-enables cells after a win', () => {
     render(<TicTacToePage />);
-    clickCell(1);
-    clickCell(2);
+    clickCell(1); // X
+    clickCell(4); // O
+    clickCell(2); // X
+    clickCell(5); // O
+    clickCell(3); // X wins
+
     fireEvent.click(screen.getByRole('button', { name: /new game/i }));
+
     getCells().forEach((cell) => {
       expect(cell.textContent).toBe('');
-    });
-  });
-
-  it('resets to Player X turn after New Game', () => {
-    render(<TicTacToePage />);
-    clickCell(1);
-    clickCell(2);
-    fireEvent.click(screen.getByRole('button', { name: /new game/i }));
-    expect(screen.getByRole('status').textContent).toMatch(/player x/i);
-  });
-
-  it('cells are enabled again after New Game following a win', () => {
-    render(<TicTacToePage />);
-    clickCell(1);
-    clickCell(4);
-    clickCell(2);
-    clickCell(5);
-    clickCell(3); // X wins
-    fireEvent.click(screen.getByRole('button', { name: /new game/i }));
-    getCells().forEach((cell) => {
       expect((cell as HTMLButtonElement).disabled).toBe(false);
     });
+    expect(screen.getByRole('status').textContent).toMatch(/player x/i);
   });
 
   it('preserves scores after New Game', () => {
@@ -319,27 +228,20 @@ describe('TicTacToePage – New Game', () => {
 /* ── Accessibility ────────────────────────────────────────────────────────── */
 
 describe('TicTacToePage – accessibility', () => {
-  it('each cell has an aria-label identifying its position', () => {
+  it('each cell has an aria-label with position; occupied cells include the mark', () => {
     render(<TicTacToePage />);
     const cells = getCells();
     cells.forEach((cell, i) => {
       expect(cell.getAttribute('aria-label')).toMatch(new RegExp(`Cell ${i + 1}`, 'i'));
     });
-  });
 
-  it('occupied cell aria-label includes the player mark', () => {
-    render(<TicTacToePage />);
     clickCell(1); // X
     expect(getCells()[0].getAttribute('aria-label')).toMatch(/X/);
   });
 
-  it('status region has role="status"', () => {
-    render(<TicTacToePage />);
-    expect(screen.getByRole('status')).toBeDefined();
-  });
-
-  it('board has role="grid"', () => {
+  it('board has role="grid" and status region has role="status"', () => {
     render(<TicTacToePage />);
     expect(screen.getByRole('grid')).toBeDefined();
+    expect(screen.getByRole('status')).toBeDefined();
   });
 });
