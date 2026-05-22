@@ -16,11 +16,12 @@ describe('NavBar', () => {
     expect(screen.getByText(/MyApp/i)).toBeDefined();
   });
 
-  it('renders Home, Weather, and Time Zones links', () => {
+  it('renders Home, Weather, Time Zones, and Contact links', () => {
     render(<NavBar {...defaultProps} />);
     expect(screen.getByRole('link', { name: /home/i })).toBeDefined();
     expect(screen.getByRole('link', { name: /weather/i })).toBeDefined();
     expect(screen.getByRole('link', { name: /time zones/i })).toBeDefined();
+    expect(screen.getByRole('link', { name: /contact/i })).toBeDefined();
   });
 
   it('marks the Home link as active when path is "/"', () => {
@@ -39,6 +40,12 @@ describe('NavBar', () => {
     render(<NavBar {...defaultProps} currentPath="/timezones" />);
     const tzLink = screen.getByRole('link', { name: /time zones/i });
     expect(tzLink.className).toContain('navbar-link--active');
+  });
+
+  it('marks the Contact link as active when path is "/contact"', () => {
+    render(<NavBar {...defaultProps} currentPath="/contact" />);
+    const contactLink = screen.getByRole('link', { name: /contact/i });
+    expect(contactLink.className).toContain('navbar-link--active');
   });
 
   it('calls onNavigate with "/" when Home link is clicked', () => {
@@ -60,6 +67,13 @@ describe('NavBar', () => {
     render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
     fireEvent.click(screen.getByRole('link', { name: /time zones/i }));
     expect(onNavigate).toHaveBeenCalledWith('/timezones');
+  });
+
+  it('calls onNavigate with "/contact" when Contact link is clicked', () => {
+    const onNavigate = vi.fn();
+    render(<NavBar {...defaultProps} onNavigate={onNavigate} />);
+    fireEvent.click(screen.getByRole('link', { name: /contact/i }));
+    expect(onNavigate).toHaveBeenCalledWith('/contact');
   });
 
   it('renders the theme toggle button', () => {
