@@ -41,6 +41,16 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
         </li>
         <li>
           <a
+            href="#/timezones"
+            className={`navbar-link${currentPath === '/timezones' ? ' navbar-link--active' : ''}`}
+            onClick={(e) => handleClick(e, '/timezones')}
+            aria-current={currentPath === '/timezones' ? 'page' : undefined}
+          >
+            🕐 Time Zones
+          </a>
+        </li>
+        <li>
+          <a
             href="https://mattvanslyke-wwt.aine-cohort-calm-fox.net/"
             className="navbar-link"
             target="_blank"
