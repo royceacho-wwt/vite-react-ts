@@ -11,6 +11,7 @@ import { TimeZonePage } from '@/pages/TimeZonePage';
  *   New York  (America/New_York / EDT = UTC−4)  → 02:00:00 PM
  *   Detroit   (America/Detroit  / EDT = UTC−4)  → 02:00:00 PM
  *   St. Louis (America/Chicago  / CDT = UTC−5)  → 01:00:00 PM
+ *   Boise     (America/Boise    / MDT = UTC−6)  → 12:00:00 PM
  *   Honolulu  (Pacific/Honolulu / HST = UTC−10) → 08:00:00 AM
  *   Paris     (Europe/Paris     / CEST = UTC+2) → 08:00:00 PM
  */
@@ -39,10 +40,10 @@ describe('TimeZonePage', () => {
     expect(screen.getByText(/Live clocks for cities across the United States and beyond/i)).toBeDefined();
   });
 
-  it('renders exactly five city cards (article elements)', () => {
+  it('renders exactly six city cards (article elements)', () => {
     render(<TimeZonePage />);
     const cards = screen.getAllByRole('article');
-    expect(cards.length).toBe(5);
+    expect(cards.length).toBe(6);
   });
 
   it('shows New York City as the first card', () => {
@@ -60,12 +61,17 @@ describe('TimeZonePage', () => {
     expect(screen.getByText('St. Louis')).toBeDefined();
   });
 
-  it('shows Honolulu as the fourth card', () => {
+  it('shows Boise as the fourth card', () => {
+    render(<TimeZonePage />);
+    expect(screen.getByText('Boise')).toBeDefined();
+  });
+
+  it('shows Honolulu as the fifth card', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('Honolulu')).toBeDefined();
   });
 
-  it('shows Paris as the fifth card', () => {
+  it('shows Paris as the sixth card', () => {
     render(<TimeZonePage />);
     expect(screen.getByText('Paris')).toBeDefined();
   });
@@ -75,6 +81,7 @@ describe('TimeZonePage', () => {
     expect(screen.getByText('New York')).toBeDefined();
     expect(screen.getByText('Michigan')).toBeDefined();
     expect(screen.getByText('Missouri')).toBeDefined();
+    expect(screen.getByText('Idaho')).toBeDefined();
     expect(screen.getByText('Hawaii')).toBeDefined();
     expect(screen.getByText('France')).toBeDefined();
   });
@@ -84,6 +91,7 @@ describe('TimeZonePage', () => {
     expect(screen.getByRole('img', { name: 'New York City' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Detroit' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'St. Louis' })).toBeDefined();
+    expect(screen.getByRole('img', { name: 'Boise' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Honolulu' })).toBeDefined();
     expect(screen.getByRole('img', { name: 'Paris' })).toBeDefined();
   });
@@ -94,7 +102,7 @@ describe('TimeZonePage', () => {
     render(<TimeZonePage />);
     // Each clock has aria-live="polite" and an aria-label containing "Current time in"
     const clocks = screen.getAllByLabelText(/Current time in/i);
-    expect(clocks.length).toBe(5);
+    expect(clocks.length).toBe(6);
     clocks.forEach((clock) => {
       // Should contain AM or PM
       expect(clock.getAttribute('aria-label')).toMatch(/AM|PM/i);
@@ -117,6 +125,12 @@ describe('TimeZonePage', () => {
     render(<TimeZonePage />);
     const stlClock = screen.getByLabelText(/Current time in St\. Louis/i);
     expect(stlClock.getAttribute('aria-label')).toContain('01:00:00 PM');
+  });
+
+  it('Boise clock reads 12:00:00 PM at the fixed UTC instant', () => {
+    render(<TimeZonePage />);
+    const boiseClock = screen.getByLabelText(/Current time in Boise/i);
+    expect(boiseClock.getAttribute('aria-label')).toContain('12:00:00 PM');
   });
 
   it('Honolulu clock reads 08:00:00 AM at the fixed UTC instant', () => {
@@ -155,6 +169,19 @@ describe('TimeZonePage', () => {
     });
 
     const clockAfter = screen.getByLabelText(/Current time in Detroit/i).getAttribute('aria-label');
+    // After 1 second the time should have changed (seconds digit increments)
+    expect(clockAfter).not.toBe(clockBefore);
+  });
+
+  it('updates the Boise clock after one second', () => {
+    render(<TimeZonePage />);
+    const clockBefore = screen.getByLabelText(/Current time in Boise/i).getAttribute('aria-label');
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    const clockAfter = screen.getByLabelText(/Current time in Boise/i).getAttribute('aria-label');
     // After 1 second the time should have changed (seconds digit increments)
     expect(clockAfter).not.toBe(clockBefore);
   });
