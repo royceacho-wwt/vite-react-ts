@@ -11,6 +11,7 @@ import { MattPage } from '@/pages/MattPage';
 import { TicTacToePage } from '@/pages/TicTacToePage';
 import { TimeZonePage } from '@/pages/TimeZonePage';
 import { WeatherPage } from '@/pages/WeatherPage';
+import { WordGamePage } from '@/pages/WordGamePage';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -25,6 +26,8 @@ function App() {
         return <TimeZonePage />;
       case '/tictactoe':
         return <TicTacToePage />;
+      case '/wordgame':
+        return <WordGamePage />;
       case '/matt':
         return <MattPage />;
       case '/contact':
