@@ -1,0 +1,228 @@
+/* ── 2048 Page ────────────────────────────────────────────────────────────── */
+
+/* Theme-aware empty-cell colour */
+:root,
+[data-theme='dark'] {
+  --color-tile-empty: rgba(238, 228, 219, 0.35);
+}
+
+[data-theme='light'] {
+  --color-tile-empty: rgba(205, 193, 180, 0.55);
+}
+
+/* ── Page layout ──────────────────────────────────────────────────────────── */
+
+.g2048-page {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.g2048-title {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+  color: var(--color);
+}
+
+/* ── Header row (score + new-game button) ─────────────────────────────────── */
+
+.g2048-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 440px;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.g2048-score {
+  background: #bbada0;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+}
+
+.g2048-score-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #eee4da;
+}
+
+.g2048-score-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #f9f6f2;
+  line-height: 1.2;
+}
+
+/* ── New Game button ──────────────────────────────────────────────────────── */
+
+.g2048-btn-new {
+  background: #8f7a66;
+  color: #f9f6f2;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.g2048-btn-new:hover {
+  background: #7f6a56;
+  transform: translateY(-1px);
+}
+
+.g2048-btn-new:active {
+  transform: translateY(0);
+}
+
+/* ── Status message ───────────────────────────────────────────────────────── */
+
+.g2048-status {
+  width: 100%;
+  max-width: 440px;
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.g2048-status--visible {
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+}
+
+.g2048-status-message {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #f9f6f2;
+  text-align: center;
+}
+
+/* ── Board ────────────────────────────────────────────────────────────────── */
+
+.g2048-board {
+  background: #bbada0;
+  border-radius: 0.75rem;
+  padding: 0.625rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.625rem;
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+}
+
+/* ── Cells ────────────────────────────────────────────────────────────────── */
+
+.g2048-cell {
+  aspect-ratio: 1;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: clamp(1rem, 4vw, 1.75rem);
+  line-height: 1;
+  transition: background 0.1s ease;
+}
+
+.g2048-cell-value {
+  /* Prevent layout shift from large numbers */
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── Tile colour palette (exact values from spec) ─────────────────────────── */
+
+.tile-empty {
+  background: var(--color-tile-empty);
+}
+
+.tile-2 {
+  background: #eee4da;
+  color: #776e65;
+}
+
+.tile-4 {
+  background: #ede0c8;
+  color: #776e65;
+}
+
+.tile-8 {
+  background: #f2b179;
+  color: #f9f6f2;
+}
+
+.tile-16 {
+  background: #f59563;
+  color: #f9f6f2;
+}
+
+.tile-32 {
+  background: #f67c5f;
+  color: #f9f6f2;
+}
+
+.tile-64 {
+  background: #f65e3b;
+  color: #f9f6f2;
+}
+
+.tile-128 {
+  background: #edcf72;
+  color: #f9f6f2;
+}
+
+.tile-256 {
+  background: #edcc61;
+  color: #f9f6f2;
+}
+
+.tile-512 {
+  background: #edc850;
+  color: #f9f6f2;
+}
+
+.tile-1024 {
+  background: #edc53f;
+  color: #f9f6f2;
+}
+
+.tile-2048 {
+  background: #edc22e;
+  color: #f9f6f2;
+}
+
+.tile-super {
+  background: #3c3a32;
+  color: #f9f6f2;
+}
+
+/* ── Hint text ────────────────────────────────────────────────────────────── */
+
+.g2048-hint {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--color);
+  opacity: 0.5;
+  text-align: center;
+}
+

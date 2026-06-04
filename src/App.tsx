@@ -6,6 +6,7 @@ import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
 import { ContactPage } from '@/pages/ContactPage';
+import { Game2048Page } from '@/pages/Game2048Page';
 import { HomePage } from '@/pages/HomePage';
 import { MattPage } from '@/pages/MattPage';
 import { TicTacToePage } from '@/pages/TicTacToePage';
@@ -28,6 +29,8 @@ function App() {
         return <TicTacToePage />;
       case '/wordgame':
         return <WordGamePage />;
+      case '/2048':
+        return <Game2048Page />;
       case '/matt':
         return <MattPage />;
       case '/contact':

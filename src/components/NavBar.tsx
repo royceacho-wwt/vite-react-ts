@@ -71,6 +71,16 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
         </li>
         <li>
           <a
+            href="#/2048"
+            className={`navbar-link${currentPath === '/2048' ? ' navbar-link--active' : ''}`}
+            onClick={(e) => handleClick(e, '/2048')}
+            aria-current={currentPath === '/2048' ? 'page' : undefined}
+          >
+            🎲 2048
+          </a>
+        </li>
+        <li>
+          <a
             href="#/contact"
             className={`navbar-link${currentPath === '/contact' ? ' navbar-link--active' : ''}`}
             onClick={(e) => handleClick(e, '/contact')}
