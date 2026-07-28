@@ -28,6 +28,7 @@ const BASE_STAR_SPEED = 2;
 const INITIAL_SPAWN_INTERVAL = 1500; // ms
 const MIN_SPAWN_INTERVAL = 300; // ms
 const DIFFICULTY_INCREASE_RATE = 0.95; // multiplier per second
+const KEY_RELEASE_DELAY = 150; // ms - delay before key release takes effect (creates momentum)
 
 /* ── Helper functions ──────────────────────────────────────────────────────── */
 
@@ -96,6 +97,7 @@ export function ShootingStarsPage() {
   const [stars, setStars] = useState<Star[]>([]);
 
   const keysPressed = useRef<Set<string>>(new Set());
+  const keyReleaseTimers = useRef<Map<string, number>>(new Map()); // Tracks pending key release timers
   const gameLoopRef = useRef<number | null>(null);
   const spawnTimerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
@@ -106,15 +108,45 @@ export function ShootingStarsPage() {
 
   /* ── Keyboard handlers ───────────────────────────────────────────────────── */
   useEffect(() => {
+    // Capture ref values at effect setup time for cleanup
+    const timersRef = keyReleaseTimers.current;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(e.key)) {
         e.preventDefault();
-        keysPressed.current.add(e.key.toLowerCase());
+        const key = e.key.toLowerCase();
+
+        // If there's a pending release timer for this key, cancel it
+        const existingTimer = keyReleaseTimers.current.get(key);
+        if (existingTimer !== undefined) {
+          clearTimeout(existingTimer);
+          keyReleaseTimers.current.delete(key);
+        }
+
+        keysPressed.current.add(key);
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      keysPressed.current.delete(e.key.toLowerCase());
+      const key = e.key.toLowerCase();
+
+      // Instead of immediately removing the key, set a delayed removal
+      // This creates the "momentum" effect where movement continues briefly
+      if (keysPressed.current.has(key)) {
+        // Clear any existing timer for this key
+        const existingTimer = keyReleaseTimers.current.get(key);
+        if (existingTimer !== undefined) {
+          clearTimeout(existingTimer);
+        }
+
+        // Set a new delayed removal
+        const timerId = window.setTimeout(() => {
+          keysPressed.current.delete(key);
+          keyReleaseTimers.current.delete(key);
+        }, KEY_RELEASE_DELAY);
+
+        keyReleaseTimers.current.set(key, timerId);
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -123,6 +155,9 @@ export function ShootingStarsPage() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      // Clean up any pending timers using captured ref
+      timersRef.forEach((timerId) => clearTimeout(timerId));
+      timersRef.clear();
     };
   }, []);
 
@@ -211,6 +246,11 @@ export function ShootingStarsPage() {
     startTimeRef.current = performance.now();
     lastFrameTimeRef.current = 0;
     isPlayingRef.current = true;
+
+    // Clear any lingering key states and timers from previous game
+    keysPressed.current.clear();
+    keyReleaseTimers.current.forEach((timerId) => clearTimeout(timerId));
+    keyReleaseTimers.current.clear();
 
     gameLoopRef.current = requestAnimationFrame(gameLoop);
     spawnTimerRef.current = window.setTimeout(spawnStar, spawnIntervalRef.current);
