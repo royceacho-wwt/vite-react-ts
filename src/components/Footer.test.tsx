@@ -7,12 +7,12 @@ describe('Footer', () => {
   it('renders the footer with version', () => {
     render(<Footer />);
     const footer = screen.getByRole('contentinfo');
-    expect(footer).toBeInTheDocument();
+    expect(footer).toBeDefined();
   });
 
   it('displays the version number', () => {
     render(<Footer />);
     const versionText = screen.getByText(/v\d+\.\d+\.\d+/);
-    expect(versionText).toBeInTheDocument();
+    expect(versionText).toBeDefined();
   });
 });
