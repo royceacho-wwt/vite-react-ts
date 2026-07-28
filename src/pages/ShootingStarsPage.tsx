@@ -102,6 +102,7 @@ export function ShootingStarsPage() {
   const lastFrameTimeRef = useRef<number>(0);
   const starIdRef = useRef(0);
   const spawnIntervalRef = useRef(INITIAL_SPAWN_INTERVAL);
+  const isPlayingRef = useRef(false);
 
   /* ── Keyboard handlers ───────────────────────────────────────────────────── */
   useEffect(() => {
@@ -186,7 +187,8 @@ export function ShootingStarsPage() {
 
   /* ── Star spawning ───────────────────────────────────────────────────────── */
   const spawnStar = useCallback(() => {
-    if (gameState !== 'playing') return;
+    // Use ref to check if game is still playing (avoids stale closure issues)
+    if (!isPlayingRef.current) return;
 
     const elapsedSeconds = (performance.now() - startTimeRef.current) / 1000;
     const newStar = createStar(starIdRef.current++, elapsedSeconds);
@@ -196,7 +198,7 @@ export function ShootingStarsPage() {
     spawnIntervalRef.current = Math.max(MIN_SPAWN_INTERVAL, spawnIntervalRef.current * DIFFICULTY_INCREASE_RATE);
 
     spawnTimerRef.current = window.setTimeout(spawnStar, spawnIntervalRef.current);
-  }, [gameState]);
+  }, []);
 
   /* ── Start/stop game ─────────────────────────────────────────────────────── */
   const startGame = useCallback(() => {
@@ -208,12 +210,14 @@ export function ShootingStarsPage() {
     spawnIntervalRef.current = INITIAL_SPAWN_INTERVAL;
     startTimeRef.current = performance.now();
     lastFrameTimeRef.current = 0;
+    isPlayingRef.current = true;
 
     gameLoopRef.current = requestAnimationFrame(gameLoop);
     spawnTimerRef.current = window.setTimeout(spawnStar, spawnIntervalRef.current);
   }, [gameLoop, spawnStar]);
 
   const stopGame = useCallback(() => {
+    isPlayingRef.current = false;
     if (gameLoopRef.current) {
       cancelAnimationFrame(gameLoopRef.current);
       gameLoopRef.current = null;
