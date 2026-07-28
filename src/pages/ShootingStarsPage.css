@@ -1,0 +1,173 @@
+/* ── Shooting Stars Page ─────────────────────────────────────────────────── */
+
+.shooting-stars-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  min-height: calc(100vh - 60px);
+}
+
+.shooting-stars-title {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary, #1a1a2e);
+}
+
+.shooting-stars-subtitle {
+  color: var(--text-secondary, #666);
+  margin-bottom: 1rem;
+}
+
+/* ── Scores ────────────────────────────────────────────────────────────────── */
+
+.shooting-stars-scores {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.shooting-stars-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--card-bg, #f8f9fa);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.shooting-stars-score-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #666);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.shooting-stars-score-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-primary, #1a1a2e);
+}
+
+/* ── Game Arena ────────────────────────────────────────────────────────────── */
+
+.shooting-stars-arena {
+  position: relative;
+  background: #0a0a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 0 60px rgba(30, 30, 80, 0.3);
+}
+
+/* ── Player ────────────────────────────────────────────────────────────────── */
+
+.shooting-stars-player {
+  position: absolute;
+  background: #00ff88;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ff88, 0 0 20px rgba(0, 255, 136, 0.5);
+  z-index: 10;
+}
+
+/* ── Stars ─────────────────────────────────────────────────────────────────── */
+
+.shooting-stars-star {
+  position: absolute;
+  background: #ff6b6b;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff6b6b, 0 0 16px rgba(255, 107, 107, 0.5);
+}
+
+/* ── Overlay ───────────────────────────────────────────────────────────────── */
+
+.shooting-stars-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 26, 0.9);
+  color: #fff;
+  z-index: 20;
+}
+
+.shooting-stars-overlay p {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.shooting-stars-gameover-text {
+  font-size: 2rem !important;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.shooting-stars-new-record {
+  color: #ffd700;
+  font-weight: bold;
+  animation: pulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+/* ── Button ────────────────────────────────────────────────────────────────── */
+
+.shooting-stars-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.shooting-stars-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.shooting-stars-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Instructions ──────────────────────────────────────────────────────────── */
+
+.shooting-stars-instructions {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--text-secondary, #666);
+}
+
+.shooting-stars-instructions p {
+  margin: 0.25rem 0;
+}
+
+/* ── Dark mode adjustments ─────────────────────────────────────────────────── */
+
+:root.dark .shooting-stars-title {
+  color: #fff;
+}
+
+:root.dark .shooting-stars-score {
+  background: #1a1a2e;
+}
+
+:root.dark .shooting-stars-score-value {
+  color: #fff;
+}
+
+:root.dark .shooting-stars-arena {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 60px rgba(30, 30, 80, 0.5);
+}
