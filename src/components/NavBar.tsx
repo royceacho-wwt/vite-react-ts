@@ -91,6 +91,16 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
         </li>
         <li>
           <a
+            href="#/state-capitals"
+            className={`navbar-link${currentPath === '/state-capitals' ? ' navbar-link--active' : ''}`}
+            onClick={(e) => handleClick(e, '/state-capitals')}
+            aria-current={currentPath === '/state-capitals' ? 'page' : undefined}
+          >
+            🏛️ State Capitals
+          </a>
+        </li>
+        <li>
+          <a
             href="#/contact"
             className={`navbar-link${currentPath === '/contact' ? ' navbar-link--active' : ''}`}
             onClick={(e) => handleClick(e, '/contact')}
