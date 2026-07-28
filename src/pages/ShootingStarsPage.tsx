@@ -20,6 +20,7 @@ interface Star {
 interface DifficultySettings {
   starCount: number;
   maxSpeed: number;
+  playerSpeed: number;
 }
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
@@ -28,16 +29,24 @@ const GAME_WIDTH = 600;
 const GAME_HEIGHT = 400;
 const PLAYER_SIZE = 12;
 const STAR_SIZE = 10;
-const PLAYER_SPEED = 5;
 const KEY_RELEASE_DELAY = 150; // ms - delay before key release takes effect (creates momentum)
 
 // Default difficulty settings
 const DEFAULT_STAR_COUNT = 5;
 const DEFAULT_MAX_SPEED = 4;
+const DEFAULT_PLAYER_SPEED = 3;
 const MIN_STAR_COUNT = 1;
-const MAX_STAR_COUNT = 20;
+const MAX_STAR_COUNT = 100;
 const MIN_SPEED = 1;
 const MAX_SPEED = 10;
+const MIN_PLAYER_SPEED = 1;
+const MAX_PLAYER_SPEED = 10;
+
+// Speed scaling factor - makes speed value of 1 slower
+// At speed 1, actual speed is 0.5 pixels per frame
+// At speed 10, actual speed is 5 pixels per frame
+const STAR_SPEED_SCALE = 0.5;
+const PLAYER_SPEED_SCALE = 1.0;
 
 /* ── Helper functions ──────────────────────────────────────────────────────── */
 
@@ -54,8 +63,9 @@ function createStar(id: number, maxSpeed: number): Star {
   const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
   let x: number, y: number, vx: number, vy: number;
 
-  // Random speed between 1 and maxSpeed
-  const speed = 1 + Math.random() * (maxSpeed - 1);
+  // Random speed between 1 and maxSpeed, scaled for slower base speed
+  const baseSpeed = 1 + Math.random() * (maxSpeed - 1);
+  const speed = baseSpeed * STAR_SPEED_SCALE;
 
   switch (edge) {
     case 0: // top
@@ -106,6 +116,7 @@ export function ShootingStarsPage() {
   const [settings, setSettings] = useState<DifficultySettings>({
     starCount: DEFAULT_STAR_COUNT,
     maxSpeed: DEFAULT_MAX_SPEED,
+    playerSpeed: DEFAULT_PLAYER_SPEED,
   });
 
   const keysPressed = useRef<Set<string>>(new Set());
@@ -192,11 +203,12 @@ export function ShootingStarsPage() {
     setPlayerPos((prev) => {
       let { x, y } = prev;
       const keys = keysPressed.current;
+      const actualPlayerSpeed = settingsRef.current.playerSpeed * PLAYER_SPEED_SCALE;
 
-      if (keys.has('arrowup') || keys.has('w')) y -= PLAYER_SPEED;
-      if (keys.has('arrowdown') || keys.has('s')) y += PLAYER_SPEED;
-      if (keys.has('arrowleft') || keys.has('a')) x -= PLAYER_SPEED;
-      if (keys.has('arrowright') || keys.has('d')) x += PLAYER_SPEED;
+      if (keys.has('arrowup') || keys.has('w')) y -= actualPlayerSpeed;
+      if (keys.has('arrowdown') || keys.has('s')) y += actualPlayerSpeed;
+      if (keys.has('arrowleft') || keys.has('a')) x -= actualPlayerSpeed;
+      if (keys.has('arrowright') || keys.has('d')) x += actualPlayerSpeed;
 
       // Clamp to bounds
       x = Math.max(PLAYER_SIZE / 2, Math.min(GAME_WIDTH - PLAYER_SIZE / 2, x));
@@ -308,6 +320,16 @@ export function ShootingStarsPage() {
     }
   };
 
+  const handlePlayerSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      setSettings((prev) => ({
+        ...prev,
+        playerSpeed: Math.max(MIN_PLAYER_SPEED, Math.min(MAX_PLAYER_SPEED, value)),
+      }));
+    }
+  };
+
   return (
     <main className="shooting-stars-page">
       <h1 className="shooting-stars-title">⭐ Shooting Stars</h1>
@@ -360,6 +382,19 @@ export function ShootingStarsPage() {
                 />
                 <span className="shooting-stars-setting-value">{settings.maxSpeed}</span>
               </div>
+
+              <div className="shooting-stars-setting">
+                <label htmlFor="player-speed">Player speed:</label>
+                <input
+                  id="player-speed"
+                  type="range"
+                  min={MIN_PLAYER_SPEED}
+                  max={MAX_PLAYER_SPEED}
+                  value={settings.playerSpeed}
+                  onChange={handlePlayerSpeedChange}
+                />
+                <span className="shooting-stars-setting-value">{settings.playerSpeed}</span>
+              </div>
             </div>
 
             <button className="shooting-stars-btn" onClick={startGame}>
@@ -404,7 +439,6 @@ export function ShootingStarsPage() {
                   width: STAR_SIZE,
                   height: STAR_SIZE,
                 }}
-                aria-hidden="true"
               />
             ))}
           </>
@@ -412,8 +446,8 @@ export function ShootingStarsPage() {
       </div>
 
       <div className="shooting-stars-instructions">
-        <p>🎮 Controls: Arrow keys or WASD</p>
-        <p>⚙️ Adjust difficulty settings before starting!</p>
+        <p>Use ↑ ↓ ← → or W A S D to move</p>
+        <p>Avoid the red stars as long as you can!</p>
       </div>
     </main>
   );
