@@ -17,6 +17,11 @@ interface Star {
   vy: number;
 }
 
+interface DifficultySettings {
+  starCount: number;
+  maxSpeed: number;
+}
+
 /* ── Constants ─────────────────────────────────────────────────────────────── */
 
 const GAME_WIDTH = 600;
@@ -24,11 +29,15 @@ const GAME_HEIGHT = 400;
 const PLAYER_SIZE = 12;
 const STAR_SIZE = 10;
 const PLAYER_SPEED = 5;
-const BASE_STAR_SPEED = 2;
-const INITIAL_SPAWN_INTERVAL = 1500; // ms
-const MIN_SPAWN_INTERVAL = 300; // ms
-const DIFFICULTY_INCREASE_RATE = 0.95; // multiplier per second
 const KEY_RELEASE_DELAY = 150; // ms - delay before key release takes effect (creates momentum)
+
+// Default difficulty settings
+const DEFAULT_STAR_COUNT = 5;
+const DEFAULT_MAX_SPEED = 4;
+const MIN_STAR_COUNT = 1;
+const MAX_STAR_COUNT = 20;
+const MIN_SPEED = 1;
+const MAX_SPEED = 10;
 
 /* ── Helper functions ──────────────────────────────────────────────────────── */
 
@@ -40,14 +49,13 @@ function checkCollision(player: Position, star: Star): boolean {
   return distance < collisionDistance;
 }
 
-function createStar(id: number, elapsedSeconds: number): Star {
+function createStar(id: number, maxSpeed: number): Star {
   // Stars spawn from edges and move toward the center area
   const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
   let x: number, y: number, vx: number, vy: number;
 
-  // Speed increases with time
-  const speedMultiplier = 1 + elapsedSeconds * 0.05;
-  const speed = BASE_STAR_SPEED * speedMultiplier;
+  // Random speed between 1 and maxSpeed
+  const speed = 1 + Math.random() * (maxSpeed - 1);
 
   switch (edge) {
     case 0: // top
@@ -95,16 +103,24 @@ export function ShootingStarsPage() {
   });
   const [playerPos, setPlayerPos] = useState<Position>({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 });
   const [stars, setStars] = useState<Star[]>([]);
+  const [settings, setSettings] = useState<DifficultySettings>({
+    starCount: DEFAULT_STAR_COUNT,
+    maxSpeed: DEFAULT_MAX_SPEED,
+  });
 
   const keysPressed = useRef<Set<string>>(new Set());
   const keyReleaseTimers = useRef<Map<string, number>>(new Map()); // Tracks pending key release timers
   const gameLoopRef = useRef<number | null>(null);
-  const spawnTimerRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
   const starIdRef = useRef(0);
-  const spawnIntervalRef = useRef(INITIAL_SPAWN_INTERVAL);
   const isPlayingRef = useRef(false);
+  const settingsRef = useRef(settings);
+
+  // Keep settingsRef in sync with settings state
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
 
   /* ── Keyboard handlers ───────────────────────────────────────────────────── */
   useEffect(() => {
@@ -189,15 +205,26 @@ export function ShootingStarsPage() {
       return { x, y };
     });
 
-    // Update stars
+    // Update stars and maintain constant count
     setStars((prevStars) => {
-      return prevStars
+      // Move existing stars and filter out-of-bounds ones
+      const updatedStars = prevStars
         .map((star) => ({
           ...star,
           x: star.x + star.vx,
           y: star.y + star.vy,
         }))
         .filter((star) => !isStarOutOfBounds(star));
+
+      // Spawn new stars to maintain the target count
+      const { starCount, maxSpeed } = settingsRef.current;
+      const starsToSpawn = starCount - updatedStars.length;
+
+      for (let i = 0; i < starsToSpawn; i++) {
+        updatedStars.push(createStar(starIdRef.current++, maxSpeed));
+      }
+
+      return updatedStars;
     });
 
     gameLoopRef.current = requestAnimationFrame(gameLoop);
@@ -220,21 +247,6 @@ export function ShootingStarsPage() {
     }
   }, [playerPos, stars, gameState, score, highScore]);
 
-  /* ── Star spawning ───────────────────────────────────────────────────────── */
-  const spawnStar = useCallback(() => {
-    // Use ref to check if game is still playing (avoids stale closure issues)
-    if (!isPlayingRef.current) return;
-
-    const elapsedSeconds = (performance.now() - startTimeRef.current) / 1000;
-    const newStar = createStar(starIdRef.current++, elapsedSeconds);
-    setStars((prev) => [...prev, newStar]);
-
-    // Decrease spawn interval over time (difficulty increase)
-    spawnIntervalRef.current = Math.max(MIN_SPAWN_INTERVAL, spawnIntervalRef.current * DIFFICULTY_INCREASE_RATE);
-
-    spawnTimerRef.current = window.setTimeout(spawnStar, spawnIntervalRef.current);
-  }, []);
-
   /* ── Start/stop game ─────────────────────────────────────────────────────── */
   const startGame = useCallback(() => {
     setGameState('playing');
@@ -242,7 +254,6 @@ export function ShootingStarsPage() {
     setStars([]);
     setPlayerPos({ x: GAME_WIDTH / 2, y: GAME_HEIGHT / 2 });
     starIdRef.current = 0;
-    spawnIntervalRef.current = INITIAL_SPAWN_INTERVAL;
     startTimeRef.current = performance.now();
     lastFrameTimeRef.current = 0;
     isPlayingRef.current = true;
@@ -253,18 +264,13 @@ export function ShootingStarsPage() {
     keyReleaseTimers.current.clear();
 
     gameLoopRef.current = requestAnimationFrame(gameLoop);
-    spawnTimerRef.current = window.setTimeout(spawnStar, spawnIntervalRef.current);
-  }, [gameLoop, spawnStar]);
+  }, [gameLoop]);
 
   const stopGame = useCallback(() => {
     isPlayingRef.current = false;
     if (gameLoopRef.current) {
       cancelAnimationFrame(gameLoopRef.current);
       gameLoopRef.current = null;
-    }
-    if (spawnTimerRef.current) {
-      clearTimeout(spawnTimerRef.current);
-      spawnTimerRef.current = null;
     }
   }, []);
 
@@ -280,6 +286,27 @@ export function ShootingStarsPage() {
       stopGame();
     };
   }, [stopGame]);
+
+  /* ── Settings handlers ───────────────────────────────────────────────────── */
+  const handleStarCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      setSettings((prev) => ({
+        ...prev,
+        starCount: Math.max(MIN_STAR_COUNT, Math.min(MAX_STAR_COUNT, value)),
+      }));
+    }
+  };
+
+  const handleMaxSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      setSettings((prev) => ({
+        ...prev,
+        maxSpeed: Math.max(MIN_SPEED, Math.min(MAX_SPEED, value)),
+      }));
+    }
+  };
 
   return (
     <main className="shooting-stars-page">
@@ -305,7 +332,36 @@ export function ShootingStarsPage() {
       >
         {gameState === 'idle' && (
           <div className="shooting-stars-overlay">
-            <p>Press Start to begin!</p>
+            <p>Configure difficulty and press Start!</p>
+
+            <div className="shooting-stars-settings">
+              <div className="shooting-stars-setting">
+                <label htmlFor="star-count">Stars on screen:</label>
+                <input
+                  id="star-count"
+                  type="range"
+                  min={MIN_STAR_COUNT}
+                  max={MAX_STAR_COUNT}
+                  value={settings.starCount}
+                  onChange={handleStarCountChange}
+                />
+                <span className="shooting-stars-setting-value">{settings.starCount}</span>
+              </div>
+
+              <div className="shooting-stars-setting">
+                <label htmlFor="max-speed">Max star speed:</label>
+                <input
+                  id="max-speed"
+                  type="range"
+                  min={MIN_SPEED}
+                  max={MAX_SPEED}
+                  value={settings.maxSpeed}
+                  onChange={handleMaxSpeedChange}
+                />
+                <span className="shooting-stars-setting-value">{settings.maxSpeed}</span>
+              </div>
+            </div>
+
             <button className="shooting-stars-btn" onClick={startGame}>
               🚀 Start Game
             </button>
@@ -317,7 +373,7 @@ export function ShootingStarsPage() {
             <p className="shooting-stars-gameover-text">Game Over!</p>
             <p>You survived for {score} seconds</p>
             {score === highScore && score > 0 && <p className="shooting-stars-new-record">🏆 New High Score!</p>}
-            <button className="shooting-stars-btn" onClick={startGame}>
+            <button className="shooting-stars-btn" onClick={() => setGameState('idle')}>
               🔄 Play Again
             </button>
           </div>
@@ -357,7 +413,7 @@ export function ShootingStarsPage() {
 
       <div className="shooting-stars-instructions">
         <p>🎮 Controls: Arrow keys or WASD</p>
-        <p>⚠️ Difficulty increases over time!</p>
+        <p>⚙️ Adjust difficulty settings before starting!</p>
       </div>
     </main>
   );
