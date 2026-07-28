@@ -2,6 +2,7 @@ import './App.css';
 
 import { useState } from 'react';
 
+import { Footer } from '@/components/Footer';
 import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
@@ -45,6 +46,7 @@ function App() {
     <div className="App">
       <NavBar currentPath={path} onNavigate={navigate} isDark={isDark} onToggleTheme={toggleTheme} />
       {renderPage()}
+      <Footer />
     </div>
   );
 }
