@@ -10,6 +10,7 @@ import { CrosswordPage } from '@/pages/CrosswordPage';
 import { Game2048Page } from '@/pages/Game2048Page';
 import { HomePage } from '@/pages/HomePage';
 import { MattPage } from '@/pages/MattPage';
+import { StateCapitalsPage } from '@/pages/StateCapitalsPage';
 import { TicTacToePage } from '@/pages/TicTacToePage';
 import { TimeZonePage } from '@/pages/TimeZonePage';
 import { WeatherPage } from '@/pages/WeatherPage';
@@ -34,6 +35,8 @@ function App() {
         return <Game2048Page />;
       case '/crossword':
         return <CrosswordPage />;
+      case '/state-capitals':
+        return <StateCapitalsPage />;
       case '/matt':
         return <MattPage />;
       case '/contact':
