@@ -20,50 +20,43 @@ interface GameState {
 
 /* ── Puzzle Data ───────────────────────────────────────────────────────────── */
 
-// Sports-themed crossword puzzle (10x10 grid)
-// '#' represents blocked cells
+// Sports-themed crossword puzzle (8x8 grid)
+// '#' represents blocked cells, numbers indicate clue starts, '.' is empty playable cell
+//
+// Solution:
+//   0 1 2 3 4 5 6 7
+// 0 G O A L # N B A
+// 1 O # # A # E # C
+// 2 L # # P # T # E
+// 3 F I E L D # # #
+// 4 # R # # U # # #
+// 5 # O # # N # # #
+// 6 # N # # K # # #
+// 7 # # # # # # # #
+
 const PUZZLE_TEMPLATE = [
-  ['1', '2', '3', '#', '4', '5', '6', '#', '7', '8'],
-  ['.', '.', '.', '#', '.', '.', '.', '#', '.', '.'],
-  ['9', '.', '.', '10', '.', '.', '.', '11', '.', '.'],
-  ['.', '#', '#', '.', '#', '#', '.', '.', '#', '.'],
-  ['12', '13', '14', '.', '15', '16', '.', '.', '17', '.'],
-  ['.', '.', '.', '#', '.', '.', '#', '.', '.', '#'],
-  ['.', '#', '18', '19', '.', '.', '20', '.', '.', '21'],
-  ['22', '23', '.', '.', '#', '.', '.', '#', '.', '.'],
-  ['.', '.', '#', '.', '24', '.', '.', '25', '.', '.'],
-  ['.', '.', '#', '.', '.', '#', '.', '.', '.', '.'],
+  ['1', '2', '3', '4', '#', '5', '6', '7'],
+  ['.', '#', '#', '.', '#', '.', '#', '.'],
+  ['.', '#', '#', '.', '#', '.', '#', '.'],
+  ['8', '9', '10', '11', '12', '#', '#', '#'],
+  ['#', '.', '#', '#', '.', '#', '#', '#'],
+  ['#', '.', '#', '#', '.', '#', '#', '#'],
+  ['#', '.', '#', '#', '.', '#', '#', '#'],
+  ['#', '#', '#', '#', '#', '#', '#', '#'],
 ];
 
 const CLUES: ClueData[] = [
   // Across clues
-  { number: 1, clue: 'Sport with a puck', answer: 'NHL', row: 0, col: 0, direction: 'across' },
-  { number: 4, clue: 'Tennis court divider', answer: 'NET', row: 0, col: 4, direction: 'across' },
-  { number: 7, clue: 'Boxing punch', answer: 'JAB', row: 0, col: 8, direction: 'across' },
-  { number: 9, clue: 'Olympic swimming stroke', answer: 'FREESTYLE', row: 2, col: 0, direction: 'across' },
-  { number: 12, clue: 'Soccer kick from the corner', answer: 'CORNER', row: 4, col: 0, direction: 'across' },
-  { number: 15, clue: 'Golf club type', answer: 'IRON', row: 4, col: 4, direction: 'across' },
-  { number: 18, clue: 'Basketball hoop part', answer: 'RIM', row: 6, col: 2, direction: 'across' },
-  { number: 20, clue: 'Baseball glove', answer: 'MITT', row: 6, col: 6, direction: 'across' },
-  { number: 22, clue: 'Track event distance', answer: 'MILE', row: 7, col: 0, direction: 'across' },
-  { number: 24, clue: 'Football field unit', answer: 'YARD', row: 8, col: 4, direction: 'across' },
+  { number: 1, clue: 'Soccer objective', answer: 'GOAL', row: 0, col: 0, direction: 'across' },
+  { number: 5, clue: 'Basketball league (abbr)', answer: 'NBA', row: 0, col: 5, direction: 'across' },
+  { number: 8, clue: 'Where football is played', answer: 'FIELD', row: 3, col: 0, direction: 'across' },
   // Down clues
-  { number: 1, clue: 'NBA legend Michael', answer: 'MJ', row: 0, col: 0, direction: 'down' },
-  { number: 2, clue: 'Hockey protective gear', answer: 'HELMET', row: 0, col: 1, direction: 'down' },
-  { number: 3, clue: 'Tennis serve type', answer: 'LOB', row: 0, col: 2, direction: 'down' },
-  { number: 5, clue: 'Baseball hit for four bases', answer: 'HOMERUN', row: 0, col: 5, direction: 'down' },
-  { number: 6, clue: 'Football position (abbr)', answer: 'TE', row: 0, col: 6, direction: 'down' },
-  { number: 8, clue: 'Golf ball holder', answer: 'TEE', row: 0, col: 9, direction: 'down' },
-  { number: 10, clue: 'Soccer game period', answer: 'HALF', row: 2, col: 3, direction: 'down' },
-  { number: 11, clue: 'Wrestling move', answer: 'PIN', row: 2, col: 7, direction: 'down' },
-  { number: 13, clue: 'Olympic medal color', answer: 'GOLD', row: 4, col: 1, direction: 'down' },
-  { number: 14, clue: 'Cycling race', answer: 'TOUR', row: 4, col: 2, direction: 'down' },
-  { number: 16, clue: 'Basketball shot type', answer: 'DUNK', row: 4, col: 5, direction: 'down' },
-  { number: 17, clue: 'Tennis scoring term', answer: 'LOVE', row: 4, col: 8, direction: 'down' },
-  { number: 19, clue: 'Boxing match', answer: 'BOUT', row: 6, col: 3, direction: 'down' },
-  { number: 21, clue: 'Archery target center', answer: 'BULL', row: 6, col: 9, direction: 'down' },
-  { number: 23, clue: 'Swimming pool length', answer: 'LAP', row: 7, col: 1, direction: 'down' },
-  { number: 25, clue: 'Ski slope type', answer: 'RUN', row: 8, col: 7, direction: 'down' },
+  { number: 1, clue: 'Sport with clubs and holes', answer: 'GOLF', row: 0, col: 0, direction: 'down' },
+  { number: 4, clue: 'Victory circuit', answer: 'LAP', row: 0, col: 3, direction: 'down' },
+  { number: 5, clue: 'Tennis court divider', answer: 'NET', row: 0, col: 5, direction: 'down' },
+  { number: 7, clue: 'Tennis or poker term', answer: 'ACE', row: 0, col: 7, direction: 'down' },
+  { number: 9, clue: 'Golf club type', answer: 'IRON', row: 3, col: 1, direction: 'down' },
+  { number: 12, clue: 'Basketball slam', answer: 'DUNK', row: 3, col: 4, direction: 'down' },
 ];
 
 /* ── Helper Functions ──────────────────────────────────────────────────────── */
@@ -78,15 +71,15 @@ function initializeGrid(): string[][] {
 }
 
 function getCellNumber(row: number, col: number): number | undefined {
-  const cell = PUZZLE_TEMPLATE[row][col];
-  if (cell !== '.' && cell !== '#') {
+  const cell = PUZZLE_TEMPLATE[row]?.[col];
+  if (cell && cell !== '.' && cell !== '#') {
     return parseInt(cell, 10);
   }
   return undefined;
 }
 
 function isBlocked(row: number, col: number): boolean {
-  return PUZZLE_TEMPLATE[row][col] === '#';
+  return PUZZLE_TEMPLATE[row]?.[col] === '#';
 }
 
 function getSolutionGrid(): string[][] {
@@ -95,10 +88,10 @@ function getSolutionGrid(): string[][] {
   CLUES.forEach((clue) => {
     const { answer, row, col, direction } = clue;
     for (let i = 0; i < answer.length; i++) {
-      if (direction === 'across') {
-        grid[row][col + i] = answer[i];
-      } else {
-        grid[row + i][col] = answer[i];
+      const r = direction === 'across' ? row : row + i;
+      const c = direction === 'across' ? col + i : col;
+      if (r < grid.length && c < grid[0].length && grid[r][c] !== '#') {
+        grid[r][c] = answer[i];
       }
     }
   });
@@ -247,6 +240,9 @@ export function CrosswordPage() {
   const acrossClues = CLUES.filter((c) => c.direction === 'across').sort((a, b) => a.number - b.number);
   const downClues = CLUES.filter((c) => c.direction === 'down').sort((a, b) => a.number - b.number);
 
+  const gridRows = PUZZLE_TEMPLATE.length;
+  const gridCols = PUZZLE_TEMPLATE[0].length;
+
   // Get highlighted cells based on current selection and direction
   const getHighlightedCells = useCallback((): Set<string> => {
     const cells = new Set<string>();
@@ -278,6 +274,56 @@ export function CrosswordPage() {
     return cells;
   }, [selectedCell, direction]);
 
+  const getNextCell = useCallback(
+    (row: number, col: number, dir: 'across' | 'down'): { row: number; col: number } | null => {
+      let nextRow = row;
+      let nextCol = col;
+
+      if (dir === 'across') {
+        nextCol++;
+        while (nextCol < gridCols && isBlocked(nextRow, nextCol)) {
+          nextCol++;
+        }
+        if (nextCol >= gridCols) return null;
+      } else {
+        nextRow++;
+        while (nextRow < gridRows && isBlocked(nextRow, nextCol)) {
+          nextRow++;
+        }
+        if (nextRow >= gridRows) return null;
+      }
+
+      if (isBlocked(nextRow, nextCol)) return null;
+      return { row: nextRow, col: nextCol };
+    },
+    [gridRows, gridCols]
+  );
+
+  const getPrevCell = useCallback(
+    (row: number, col: number, dir: 'across' | 'down'): { row: number; col: number } | null => {
+      let prevRow = row;
+      let prevCol = col;
+
+      if (dir === 'across') {
+        prevCol--;
+        while (prevCol >= 0 && isBlocked(prevRow, prevCol)) {
+          prevCol--;
+        }
+        if (prevCol < 0) return null;
+      } else {
+        prevRow--;
+        while (prevRow >= 0 && isBlocked(prevRow, prevCol)) {
+          prevRow--;
+        }
+        if (prevRow < 0) return null;
+      }
+
+      if (isBlocked(prevRow, prevCol)) return null;
+      return { row: prevRow, col: prevCol };
+    },
+    []
+  );
+
   const handleCellChange = useCallback(
     (row: number, col: number, value: string) => {
       if (game.solved) return;
@@ -303,50 +349,8 @@ export function CrosswordPage() {
         }
       }
     },
-    [game.grid, game.solved, direction]
+    [game.grid, game.solved, direction, getNextCell]
   );
-
-  const getNextCell = (row: number, col: number, dir: 'across' | 'down'): { row: number; col: number } | null => {
-    let nextRow = row;
-    let nextCol = col;
-
-    if (dir === 'across') {
-      nextCol++;
-      while (nextCol < 10 && isBlocked(nextRow, nextCol)) {
-        nextCol++;
-      }
-      if (nextCol >= 10) return null;
-    } else {
-      nextRow++;
-      while (nextRow < 10 && isBlocked(nextRow, nextCol)) {
-        nextRow++;
-      }
-      if (nextRow >= 10) return null;
-    }
-
-    return { row: nextRow, col: nextCol };
-  };
-
-  const getPrevCell = (row: number, col: number, dir: 'across' | 'down'): { row: number; col: number } | null => {
-    let prevRow = row;
-    let prevCol = col;
-
-    if (dir === 'across') {
-      prevCol--;
-      while (prevCol >= 0 && isBlocked(prevRow, prevCol)) {
-        prevCol--;
-      }
-      if (prevCol < 0) return null;
-    } else {
-      prevRow--;
-      while (prevRow >= 0 && isBlocked(prevRow, prevCol)) {
-        prevRow--;
-      }
-      if (prevRow < 0) return null;
-    }
-
-    return { row: prevRow, col: prevCol };
-  };
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent, row: number, col: number) => {
@@ -401,7 +405,7 @@ export function CrosswordPage() {
         setDirection((d) => (d === 'across' ? 'down' : 'across'));
       }
     },
-    [game.grid, game.solved, direction]
+    [game.grid, game.solved, direction, getNextCell, getPrevCell]
   );
 
   const handleCellSelect = useCallback(
