@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
+import { AboutPage } from '@/pages/AboutPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { CrosswordPage } from '@/pages/CrosswordPage';
 import { Game2048Page } from '@/pages/Game2048Page';
@@ -38,6 +39,8 @@ function App() {
         return <MattPage />;
       case '/contact':
         return <ContactPage />;
+      case '/about':
+        return <AboutPage />;
       case '/':
       default:
         return <HomePage count={count} onIncrement={() => setCount((c) => c + 1)} />;
