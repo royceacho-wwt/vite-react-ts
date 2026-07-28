@@ -1,0 +1,302 @@
+/* ── Crossword Page ─────────────────────────────────────────────────────────── */
+
+.cw-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cw-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--color);
+}
+
+.cw-subtitle {
+  color: var(--color);
+  opacity: 0.65;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ── Container ────────────────────────────────────────────────────────────── */
+
+.cw-container {
+  display: flex;
+  gap: 2rem;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cw-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+/* ── Grid ─────────────────────────────────────────────────────────────────── */
+
+.cw-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--nav-border);
+  padding: 2px;
+  border-radius: 0.5rem;
+}
+
+.cw-row {
+  display: flex;
+  gap: 2px;
+}
+
+/* ── Cells ────────────────────────────────────────────────────────────────── */
+
+.cw-cell {
+  width: 40px;
+  height: 40px;
+  background: var(--card-bg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cw-cell--blocked {
+  background: var(--color);
+  opacity: 0.15;
+}
+
+.cw-cell--selected {
+  background: #fbbf24;
+}
+
+[data-theme='light'] .cw-cell--selected {
+  background: #fcd34d;
+}
+
+.cw-cell--highlighted {
+  background: #fef3c7;
+}
+
+[data-theme='dark'] .cw-cell--highlighted {
+  background: rgba(251, 191, 36, 0.2);
+}
+
+.cw-cell--correct {
+  background: #86efac;
+}
+
+[data-theme='dark'] .cw-cell--correct {
+  background: rgba(34, 197, 94, 0.3);
+}
+
+.cw-cell--incorrect {
+  background: #fca5a5;
+}
+
+[data-theme='dark'] .cw-cell--incorrect {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.cw-cell-number {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--color);
+  opacity: 0.7;
+  line-height: 1;
+}
+
+.cw-cell-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color);
+  text-transform: uppercase;
+  caret-color: var(--link-color);
+}
+
+.cw-cell-input:focus {
+  outline: none;
+}
+
+/* ── Actions ──────────────────────────────────────────────────────────────── */
+
+.cw-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cw-btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--nav-border);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.cw-btn:hover {
+  transform: translateY(-1px);
+}
+
+.cw-btn--primary {
+  background: var(--link-color);
+  color: #fff;
+  border-color: var(--link-color);
+}
+
+.cw-btn--primary:hover {
+  opacity: 0.88;
+}
+
+.cw-btn--secondary {
+  background: var(--card-bg);
+  color: var(--color);
+}
+
+.cw-btn--secondary:hover {
+  background: var(--nav-active-bg);
+}
+
+/* ── Progress ─────────────────────────────────────────────────────────────── */
+
+.cw-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.cw-progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--nav-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cw-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.cw-progress-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color);
+}
+
+/* ── Clues ────────────────────────────────────────────────────────────────── */
+
+.cw-clues {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 280px;
+  max-width: 360px;
+}
+
+.cw-clue-section {
+  background: var(--card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.cw-clue-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color);
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--nav-border);
+}
+
+.cw-clue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cw-clue-item {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: var(--color);
+  transition: background 0.15s ease;
+}
+
+.cw-clue-item:hover {
+  background: var(--nav-active-bg);
+}
+
+.cw-clue-item--selected {
+  background: var(--nav-active-bg);
+  border-left: 3px solid var(--link-color);
+}
+
+.cw-clue-number {
+  font-weight: 700;
+  min-width: 1.5rem;
+  color: var(--link-color);
+}
+
+.cw-clue-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .cw-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cw-clues {
+    width: 100%;
+    max-width: none;
+  }
+
+  .cw-cell {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cw-cell-input {
+    font-size: 1.1rem;
+  }
+}
