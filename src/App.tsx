@@ -6,6 +6,7 @@ import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
 import { ContactPage } from '@/pages/ContactPage';
+import { CrosswordPage } from '@/pages/CrosswordPage';
 import { Game2048Page } from '@/pages/Game2048Page';
 import { HomePage } from '@/pages/HomePage';
 import { MattPage } from '@/pages/MattPage';
@@ -31,6 +32,8 @@ function App() {
         return <WordGamePage />;
       case '/2048':
         return <Game2048Page />;
+      case '/crossword':
+        return <CrosswordPage />;
       case '/matt':
         return <MattPage />;
       case '/contact':
