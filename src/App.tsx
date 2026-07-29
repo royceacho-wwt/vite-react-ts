@@ -11,6 +11,7 @@ import { Game2048Page } from '@/pages/Game2048Page';
 import { HomePage } from '@/pages/HomePage';
 import { MattPage } from '@/pages/MattPage';
 import { ShootingStarsPage } from '@/pages/ShootingStarsPage';
+import { SpreadsheetPage } from '@/pages/SpreadsheetPage';
 import { StateCapitalsPage } from '@/pages/StateCapitalsPage';
 import { TicTacToePage } from '@/pages/TicTacToePage';
 import { TimeZonePage } from '@/pages/TimeZonePage';
@@ -40,6 +41,8 @@ function App() {
         return <ShootingStarsPage />;
       case '/state-capitals':
         return <StateCapitalsPage />;
+      case '/spreadsheet':
+        return <SpreadsheetPage />;
       case '/matt':
         return <MattPage />;
       case '/contact':
