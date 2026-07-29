@@ -1,3 +1,4 @@
+// Entry point for the React application
 import './index.css';
 
 import React from 'react';
