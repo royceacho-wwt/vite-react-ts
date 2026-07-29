@@ -1,1 +1,20 @@
-import { render, screen, waitFor } from '@testing-library/react';\nimport { describe, expect, it } from 'vitest';\n\nimport { SpreadsheetPage } from '@/pages/SpreadsheetPage';\n\ndescribe('SpreadsheetPage', () => {\n  it('renders the spreadsheet page', async () => {\n    render(<SpreadsheetPage />);\n    await waitFor(() => {\n      expect(screen.getByText('📊 Spreadsheet')).toBeInTheDocument();\n    });\n  });\n\n  it('displays instructions', async () => {\n    render(<SpreadsheetPage />);\n    await waitFor(() => {\n      expect(screen.getByText(/Click to select/)).toBeInTheDocument();\n    });\n  });\n});\n
+import { render, screen, waitFor } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+
+import { SpreadsheetPage } from '@/pages/SpreadsheetPage';
+
+describe('SpreadsheetPage', () => {
+  it('renders the spreadsheet page', async () => {
+    render(<SpreadsheetPage />);
+    await waitFor(() => {
+      expect(screen.getByText('📊 Spreadsheet')).toBeInTheDocument();
+    });
+  });
+
+  it('displays instructions', async () => {
+    render(<SpreadsheetPage />);
+    await waitFor(() => {
+      expect(screen.getByText(/Click to select/)).toBeInTheDocument();
+    });
+  });
+});
