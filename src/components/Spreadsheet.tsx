@@ -112,7 +112,7 @@ export function Spreadsheet() {
     // Match patterns like SUM(A1:B3), AVERAGE(A1:B3), etc.
     processedFormula = processedFormula.replace(
       /\b(SUM|AVERAGE|MIN|MAX|COUNT)\s*\(\s*([A-Z]\d+):([A-Z]\d+)\s*\)/gi,
-      (match, func, start, end) => {
+      (_match, func, start, end) => {
         const range = getRangeValues(start, end, spreadsheetData, recursionStack);
         const result = applyFunction(func.toUpperCase(), range);
         return String(result);
@@ -263,7 +263,7 @@ export function Spreadsheet() {
   const currentValue = currentCellData?.value || '';
 
   return (
-    <div className="spreadsheet-container" onKeyDown={handleKeyDown} tabIndex={0}>
+    <div className="spreadsheet-container" onKeyDown={handleKeyDown} tabIndex={0} role="presentation">
       <SpreadsheetFormulaBar cellAddress={selectedCell} value={currentValue} />
 
       <div className="spreadsheet-grid" ref={gridRef}>

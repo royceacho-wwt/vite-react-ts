@@ -67,7 +67,6 @@ export function SpreadsheetCell({ address, data, isSelected, onChange, onSelect 
   };
 
   const displayValue = data?.computed ?? '';
-  const rawValue = data?.value ?? '';
 
   return (
     <div
