@@ -3,8 +3,8 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: var(--formula-bar-bg, #f9f9f9);
-  border: 1px solid var(--border-color, #ddd);
+  background: var(--input-bg);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
@@ -12,16 +12,16 @@
 
 .formula-bar-address {
   font-weight: bold;
-  color: var(--text-color, #333);
+  color: var(--color);
   min-width: 50px;
 }
 
 .formula-bar-separator {
-  color: var(--border-color, #ddd);
+  color: rgba(0, 0, 0, 0.2);
 }
 
 .formula-bar-content {
   flex: 1;
-  color: var(--text-color, #333);
+  color: var(--color);
   word-break: break-all;
 }
