@@ -30,35 +30,35 @@ describe('SpreadsheetPage', () => {
 
   it('renders the spreadsheet page', () => {
     render(<SpreadsheetPage />);
-    expect(screen.getByText('📊 Spreadsheet')).toBeInTheDocument();
+    expect(screen.getByText('📊 Spreadsheet')).toBeDefined();
   });
 
   it('renders column headers', () => {
     render(<SpreadsheetPage />);
-    expect(screen.getByText('A')).toBeInTheDocument();
-    expect(screen.getByText('B')).toBeInTheDocument();
-    expect(screen.getByText('C')).toBeInTheDocument();
+    expect(screen.getByText('A')).toBeDefined();
+    expect(screen.getByText('B')).toBeDefined();
+    expect(screen.getByText('C')).toBeDefined();
   });
 
   it('renders row headers', () => {
     render(<SpreadsheetPage />);
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeDefined();
+    expect(screen.getByText('2')).toBeDefined();
+    expect(screen.getByText('3')).toBeDefined();
   });
 
   it('selects a cell on click', () => {
     render(<SpreadsheetPage />);
     const cellA1 = screen.getByTestId('cell-A1');
     fireEvent.click(cellA1);
-    expect(cellA1).toHaveClass('selected');
+    expect(cellA1.className.includes('selected')).toBe(true);
   });
 
   it('enters edit mode on double click', () => {
     render(<SpreadsheetPage />);
     const cellA1 = screen.getByTestId('cell-A1');
     fireEvent.doubleClick(cellA1);
-    expect(screen.getByTestId('input-A1')).toBeInTheDocument();
+    expect(screen.getByTestId('input-A1')).toBeDefined();
   });
 
   it('enters a literal value', () => {
@@ -70,7 +70,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '42' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('42');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('42');
   });
 
   it('enters a text value', () => {
@@ -82,7 +82,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: 'Hello' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('Hello');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('Hello');
   });
 
   it('evaluates a simple formula', () => {
@@ -109,7 +109,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=A1+A2' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A3')).toHaveTextContent('30');
+    expect(screen.getByTestId('cell-A3').textContent).toBe('30');
   });
 
   it('evaluates SUM function', () => {
@@ -141,7 +141,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=SUM(A1:A3)' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A4')).toHaveTextContent('30');
+    expect(screen.getByTestId('cell-A4').textContent).toBe('30');
   });
 
   it('evaluates AVERAGE function', () => {
@@ -167,7 +167,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=AVERAGE(A1:A2)' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A3')).toHaveTextContent('15');
+    expect(screen.getByTestId('cell-A3').textContent).toBe('15');
   });
 
   it('evaluates MIN function', () => {
@@ -199,7 +199,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=MIN(A1:A3)' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A4')).toHaveTextContent('3');
+    expect(screen.getByTestId('cell-A4').textContent).toBe('3');
   });
 
   it('evaluates MAX function', () => {
@@ -231,7 +231,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=MAX(A1:A3)' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A4')).toHaveTextContent('8');
+    expect(screen.getByTestId('cell-A4').textContent).toBe('8');
   });
 
   it('evaluates COUNT function', () => {
@@ -257,7 +257,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=COUNT(A1:A2)' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A3')).toHaveTextContent('2');
+    expect(screen.getByTestId('cell-A3').textContent).toBe('2');
   });
 
   it('shows #ERR! for invalid formulas', () => {
@@ -269,7 +269,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=INVALID()' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('#ERR!');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('#ERR!');
   });
 
   it('shows #DIV/0! for division by zero', () => {
@@ -281,7 +281,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=10/0' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('#DIV/0!');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('#DIV/0!');
   });
 
   it('detects circular references', () => {
@@ -301,8 +301,8 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=A1' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('#CIRC!');
-    expect(screen.getByTestId('cell-A2')).toHaveTextContent('#CIRC!');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('#CIRC!');
+    expect(screen.getByTestId('cell-A2').textContent).toBe('#CIRC!');
   });
 
   it('navigates with arrow keys', () => {
@@ -313,23 +313,23 @@ describe('SpreadsheetPage', () => {
     // Select A1
     const cellA1 = screen.getByTestId('cell-A1');
     fireEvent.click(cellA1);
-    expect(cellA1).toHaveClass('selected');
+    expect(cellA1.className.includes('selected')).toBe(true);
 
     // Press right arrow
     fireEvent.keyDown(page, { key: 'ArrowRight' });
-    expect(screen.getByTestId('cell-B1')).toHaveClass('selected');
+    expect(screen.getByTestId('cell-B1').className.includes('selected')).toBe(true);
 
     // Press down arrow
     fireEvent.keyDown(page, { key: 'ArrowDown' });
-    expect(screen.getByTestId('cell-B2')).toHaveClass('selected');
+    expect(screen.getByTestId('cell-B2').className.includes('selected')).toBe(true);
 
     // Press left arrow
     fireEvent.keyDown(page, { key: 'ArrowLeft' });
-    expect(screen.getByTestId('cell-A2')).toHaveClass('selected');
+    expect(screen.getByTestId('cell-A2').className.includes('selected')).toBe(true);
 
     // Press up arrow
     fireEvent.keyDown(page, { key: 'ArrowUp' });
-    expect(screen.getByTestId('cell-A1')).toHaveClass('selected');
+    expect(screen.getByTestId('cell-A1').className.includes('selected')).toBe(true);
   });
 
   it('navigates with Tab key', () => {
@@ -343,11 +343,11 @@ describe('SpreadsheetPage', () => {
 
     // Press Tab
     fireEvent.keyDown(page, { key: 'Tab' });
-    expect(screen.getByTestId('cell-B1')).toHaveClass('selected');
+    expect(screen.getByTestId('cell-B1').className.includes('selected')).toBe(true);
 
     // Press Shift+Tab
     fireEvent.keyDown(page, { key: 'Tab', shiftKey: true });
-    expect(screen.getByTestId('cell-A1')).toHaveClass('selected');
+    expect(screen.getByTestId('cell-A1').className.includes('selected')).toBe(true);
   });
 
   it('enters edit mode with Enter key', () => {
@@ -361,7 +361,7 @@ describe('SpreadsheetPage', () => {
 
     // Press Enter to edit
     fireEvent.keyDown(page, { key: 'Enter' });
-    expect(screen.getByTestId('input-A1')).toBeInTheDocument();
+    expect(screen.getByTestId('input-A1')).toBeDefined();
   });
 
   it('cancels editing with Escape', () => {
@@ -383,7 +383,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.keyDown(input, { key: 'Escape' });
 
     // Value should remain 100
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('100');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('100');
   });
 
   it('shows formula in formula bar when cell is selected', () => {
@@ -397,14 +397,14 @@ describe('SpreadsheetPage', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
 
     // Cell should show computed value
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('30');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('30');
 
     // Select the cell
     fireEvent.click(cellA1);
 
     // Formula bar should show the formula
-    const formulaBar = screen.getByTestId('formula-bar');
-    expect(formulaBar).toHaveValue('=10+20');
+    const formulaBar = screen.getByTestId('formula-bar') as HTMLInputElement;
+    expect(formulaBar.value).toBe('=10+20');
   });
 
   it('recalculates dependent cells when a cell changes', () => {
@@ -424,7 +424,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '=A1*2' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A2')).toHaveTextContent('20');
+    expect(screen.getByTestId('cell-A2').textContent).toBe('20');
 
     // Change A1 to 20
     fireEvent.doubleClick(cellA1);
@@ -433,7 +433,7 @@ describe('SpreadsheetPage', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
 
     // A2 should update to 40
-    expect(screen.getByTestId('cell-A2')).toHaveTextContent('40');
+    expect(screen.getByTestId('cell-A2').textContent).toBe('40');
   });
 
   it('handles arithmetic operations', () => {
@@ -445,7 +445,7 @@ describe('SpreadsheetPage', () => {
     let input = screen.getByTestId('input-A1');
     fireEvent.change(input, { target: { value: '=5*3' } });
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('15');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('15');
 
     // Test subtraction
     const cellA2 = screen.getByTestId('cell-A2');
@@ -453,7 +453,7 @@ describe('SpreadsheetPage', () => {
     input = screen.getByTestId('input-A2');
     fireEvent.change(input, { target: { value: '=10-3' } });
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByTestId('cell-A2')).toHaveTextContent('7');
+    expect(screen.getByTestId('cell-A2').textContent).toBe('7');
 
     // Test division
     const cellA3 = screen.getByTestId('cell-A3');
@@ -461,7 +461,7 @@ describe('SpreadsheetPage', () => {
     input = screen.getByTestId('input-A3');
     fireEvent.change(input, { target: { value: '=20/4' } });
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByTestId('cell-A3')).toHaveTextContent('5');
+    expect(screen.getByTestId('cell-A3').textContent).toBe('5');
 
     // Test parentheses
     const cellA4 = screen.getByTestId('cell-A4');
@@ -469,7 +469,7 @@ describe('SpreadsheetPage', () => {
     input = screen.getByTestId('input-A4');
     fireEvent.change(input, { target: { value: '=(2+3)*4' } });
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByTestId('cell-A4')).toHaveTextContent('20');
+    expect(screen.getByTestId('cell-A4').textContent).toBe('20');
   });
 
   it('deletes cell content with Delete key', () => {
@@ -484,13 +484,13 @@ describe('SpreadsheetPage', () => {
     fireEvent.change(input, { target: { value: '100' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('100');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('100');
 
     // Select and delete
     fireEvent.click(cellA1);
     fireEvent.keyDown(page, { key: 'Delete' });
 
-    expect(screen.getByTestId('cell-A1')).toHaveTextContent('');
+    expect(screen.getByTestId('cell-A1').textContent).toBe('');
   });
 
   it('persists data to localStorage', () => {
