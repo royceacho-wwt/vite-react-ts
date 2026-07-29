@@ -3,6 +3,7 @@
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/pchmn/vite-react-ts-ghactions-template/blob/main/license)
 [![ci](https://github.com/pchmn/vite-react-ts-ghactions-template/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/pchmn/vite-react-ts-ghactions-template/actions)
 [![codecov.io](https://codecov.io/gh/pchmn/vite-react-ts-ghactions-template/coverage.svg?branch=main)](https://codecov.io/gh/pchmn/vite-react-ts-ghactions-template?branch=master)
+![Built with Forge](https://img.shields.io/badge/Built%20with-Forge-orange)
 <!-- [![Codacy Badge](https://app.codacy.com/project/badge/Grade/4c695ce061c34c1bb1698acc19278f0e)](https://www.codacy.com/gh/pchmn/vite-react-ts-ghactions-template/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pchmn/vite-react-ts-ghactions-template&amp;utm_campaign=Badge_Grade) -->
 
 <!-- # React - TypeScript and GitHub Actions Template with Vite -->
