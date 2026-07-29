@@ -233,7 +233,7 @@ export function evaluateFormula(
 
     // Handle function calls: SUM, AVERAGE, MIN, MAX, COUNT
     // Replace SUM(A1:B3) with the sum of values
-    expression = expression.replace(/SUM\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (match, rangeStr) => {
+    expression = expression.replace(/SUM\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (_match, rangeStr) => {
       const range = parseRangeReference(rangeStr);
       if (!range) return '0';
       const values = getRangeValues(range, data, evaluatedCache);
@@ -241,7 +241,7 @@ export function evaluateFormula(
     });
 
     // Replace AVERAGE(A1:B3)
-    expression = expression.replace(/AVERAGE\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (match, rangeStr) => {
+    expression = expression.replace(/AVERAGE\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (_match, rangeStr) => {
       const range = parseRangeReference(rangeStr);
       if (!range) return '0';
       const values = getRangeValues(range, data, evaluatedCache);
@@ -249,7 +249,7 @@ export function evaluateFormula(
     });
 
     // Replace MIN(A1:B3)
-    expression = expression.replace(/MIN\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (match, rangeStr) => {
+    expression = expression.replace(/MIN\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (_match, rangeStr) => {
       const range = parseRangeReference(rangeStr);
       if (!range) return '0';
       const values = getRangeValues(range, data, evaluatedCache);
@@ -257,7 +257,7 @@ export function evaluateFormula(
     });
 
     // Replace MAX(A1:B3)
-    expression = expression.replace(/MAX\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (match, rangeStr) => {
+    expression = expression.replace(/MAX\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (_match, rangeStr) => {
       const range = parseRangeReference(rangeStr);
       if (!range) return '0';
       const values = getRangeValues(range, data, evaluatedCache);
@@ -265,7 +265,7 @@ export function evaluateFormula(
     });
 
     // Replace COUNT(A1:B3)
-    expression = expression.replace(/COUNT\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (match, rangeStr) => {
+    expression = expression.replace(/COUNT\s*\(\s*([A-Z]+\d+:[A-Z]+\d+)\s*\)/gi, (_match, rangeStr) => {
       const range = parseRangeReference(rangeStr);
       if (!range) return '0';
       const values = getRangeValues(range, data, evaluatedCache);
