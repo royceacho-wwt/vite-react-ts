@@ -1,0 +1,217 @@
+.spreadsheet-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+}
+
+.spreadsheet-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.spreadsheet-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.spreadsheet-button:hover {
+  background-color: var(--primary-color-hover, #0056b3);
+}
+
+.spreadsheet-button:active {
+  transform: scale(0.98);
+}
+
+.spreadsheet-grid {
+  display: inline-block;
+  border: 1px solid var(--border-color, #ddd);
+  background-color: var(--cell-bg, white);
+  overflow: auto;
+  max-height: 600px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.spreadsheet-header-row {
+  display: flex;
+  position: sticky;
+  top: 0;
+  background-color: var(--header-bg, #f5f5f5);
+  border-bottom: 2px solid var(--border-color, #ddd);
+  z-index: 10;
+}
+
+.spreadsheet-corner {
+  width: 40px;
+  height: 30px;
+  border-right: 1px solid var(--border-color, #ddd);
+  background-color: var(--header-bg, #f5f5f5);
+  flex-shrink: 0;
+}
+
+.spreadsheet-header-cell {
+  width: 100px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border-color, #ddd);
+  font-weight: bold;
+  font-size: 0.85rem;
+  background-color: var(--header-bg, #f5f5f5);
+  flex-shrink: 0;
+}
+
+.spreadsheet-row {
+  display: flex;
+}
+
+.spreadsheet-row-header {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border-color, #ddd);
+  border-bottom: 1px solid var(--border-color, #ddd);
+  font-weight: bold;
+  font-size: 0.85rem;
+  background-color: var(--header-bg, #f5f5f5);
+  flex-shrink: 0;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+}
+
+.spreadsheet-cell {
+  width: 100px;
+  height: 30px;
+  border-right: 1px solid var(--border-color, #ddd);
+  border-bottom: 1px solid var(--border-color, #ddd);
+  padding: 0;
+  cursor: cell;
+  flex-shrink: 0;
+  position: relative;
+  background-color: var(--cell-bg, white);
+  transition: background-color 0.1s;
+}
+
+.spreadsheet-cell:hover {
+  background-color: var(--cell-hover-bg, #f9f9f9);
+}
+
+.spreadsheet-cell--selected {
+  background-color: var(--cell-selected-bg, #e3f2fd);
+  border: 2px solid var(--primary-color, #007bff);
+  outline: none;
+}
+
+.spreadsheet-cell--editing {
+  background-color: white;
+  border: 2px solid var(--primary-color, #007bff);
+  padding: 0;
+}
+
+.spreadsheet-cell--error {
+  background-color: var(--error-bg, #ffebee);
+  color: var(--error-color, #c62828);
+}
+
+.spreadsheet-cell-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.spreadsheet-cell-input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0 4px;
+  font-size: 0.9rem;
+  font-family: 'Courier New', monospace;
+  outline: none;
+}
+
+.spreadsheet-info {
+  padding: 1rem;
+  background-color: var(--info-bg, #f0f7ff);
+  border: 1px solid var(--info-border, #b3d9ff);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.spreadsheet-info p {
+  margin: 0;
+}
+
+.spreadsheet-info code {
+  background-color: var(--code-bg, #e8f4f8);
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Dark mode support */
+:root {
+  --primary-color: #007bff;
+  --primary-color-hover: #0056b3;
+  --border-color: #ddd;
+  --header-bg: #f5f5f5;
+  --cell-bg: white;
+  --cell-hover-bg: #f9f9f9;
+  --cell-selected-bg: #e3f2fd;
+  --error-bg: #ffebee;
+  --error-color: #c62828;
+  --info-bg: #f0f7ff;
+  --info-border: #b3d9ff;
+  --code-bg: #e8f4f8;
+  --text-secondary: #666;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #4a9eff;
+    --primary-color-hover: #2e7fd9;
+    --border-color: #444;
+    --header-bg: #2a2a2a;
+    --cell-bg: #1e1e1e;
+    --cell-hover-bg: #2a2a2a;
+    --cell-selected-bg: #1a3a52;
+    --error-bg: #3d1f1f;
+    --error-color: #ff6b6b;
+    --info-bg: #1a2a3a;
+    --info-border: #2a4a6a;
+    --code-bg: #2a3a4a;
+    --text-secondary: #aaa;
+  }
+
+  .spreadsheet-cell-content {
+    color: #e0e0e0;
+  }
+
+  .spreadsheet-cell-input {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+  }
+
+  .spreadsheet-info {
+    color: #e0e0e0;
+  }
+}

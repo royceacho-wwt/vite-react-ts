@@ -1,0 +1,19 @@
+.spreadsheet-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.spreadsheet-header {
+  margin-bottom: 2rem;
+}
+
+.spreadsheet-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+}
+
+.spreadsheet-header p {
+  margin: 0;
+  color: var(--text-secondary);
+}
