@@ -1,0 +1,27 @@
+.spreadsheet-formula-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--formula-bar-bg, #f9f9f9);
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.formula-bar-address {
+  font-weight: bold;
+  color: var(--text-color, #333);
+  min-width: 50px;
+}
+
+.formula-bar-separator {
+  color: var(--border-color, #ddd);
+}
+
+.formula-bar-content {
+  flex: 1;
+  color: var(--text-color, #333);
+  word-break: break-all;
+}

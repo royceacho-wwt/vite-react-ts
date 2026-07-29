@@ -1,0 +1,10 @@
+.spreadsheet-page {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.spreadsheet-page h1 {
+  margin-bottom: 1.5rem;
+  color: var(--text-color, #333);
+}
