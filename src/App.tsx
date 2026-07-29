@@ -9,7 +9,6 @@ import { ContactPage } from '@/pages/ContactPage';
 import { CrosswordPage } from '@/pages/CrosswordPage';
 import { Game2048Page } from '@/pages/Game2048Page';
 import { HomePage } from '@/pages/HomePage';
-import { MattPage } from '@/pages/MattPage';
 import { ShootingStarsPage } from '@/pages/ShootingStarsPage';
 import { StateCapitalsPage } from '@/pages/StateCapitalsPage';
 import { TicTacToePage } from '@/pages/TicTacToePage';
@@ -40,8 +39,6 @@ function App() {
         return <ShootingStarsPage />;
       case '/state-capitals':
         return <StateCapitalsPage />;
-      case '/matt':
-        return <MattPage />;
       case '/contact':
         return <ContactPage />;
       case '/':

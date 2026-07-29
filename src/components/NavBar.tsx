@@ -119,16 +119,6 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
             📬 Contact
           </a>
         </li>
-        <li>
-          <a
-            href="https://mattvanslyke-wwt.aine-cohort-calm-fox.net/"
-            className="navbar-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            👨‍💻 Matt&apos;s Page
-          </a>
-        </li>
       </ul>
       <div className="navbar-actions">
         <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
