@@ -1,6 +1,6 @@
 import './Spreadsheet.css';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { SpreadsheetCell } from '@/components/SpreadsheetCell';
 import { SpreadsheetFormulaBar } from '@/components/SpreadsheetFormulaBar';
@@ -48,9 +48,8 @@ export function Spreadsheet() {
   const recalculateAll = (spreadsheetData: SpreadsheetData): SpreadsheetData => {
     const result = { ...spreadsheetData };
     const visited = new Set<string>();
-    const recursionStack = new Set<string>();
 
-    const calculateCell = (address: string): string | number => {
+    const calculateCell = (address: string, recursionStack: Set<string>): string | number => {
       if (visited.has(address)) {
         return result[address]?.computed || '';
       }
@@ -59,11 +58,8 @@ export function Spreadsheet() {
         return '#CIRC!';
       }
 
-      recursionStack.add(address);
-
       const cellData = result[address];
       if (!cellData) {
-        recursionStack.delete(address);
         return '';
       }
 
@@ -72,23 +68,22 @@ export function Spreadsheet() {
       try {
         if (value.startsWith('=')) {
           const formula = value.substring(1);
-          const computed = evaluateFormula(formula, result, recursionStack);
+          const newStack = new Set(recursionStack);
+          newStack.add(address);
+          const computed = evaluateFormula(formula, result, newStack);
           result[address].computed = computed;
           visited.add(address);
-          recursionStack.delete(address);
           return computed;
         } else {
           const num = parseFloat(value);
           const computed = isNaN(num) ? value : num;
           result[address].computed = computed;
           visited.add(address);
-          recursionStack.delete(address);
           return computed;
         }
       } catch (error) {
         result[address].computed = '#ERR!';
         visited.add(address);
-        recursionStack.delete(address);
         return '#ERR!';
       }
     };
@@ -98,7 +93,7 @@ export function Spreadsheet() {
       for (let col = 0; col < COLS; col++) {
         const address = getCellAddress(row, col);
         if (result[address]) {
-          calculateCell(address);
+          calculateCell(address, new Set());
         }
       }
     }
@@ -111,37 +106,18 @@ export function Spreadsheet() {
     spreadsheetData: SpreadsheetData,
     recursionStack: Set<string>
   ): string | number => {
-    // Replace cell references and ranges with their values
     let processedFormula = formula;
 
-    // Handle ranges (A1:B3)
-    processedFormula = processedFormula.replace(/([A-Z]\d+):([A-Z]\d+)/g, (match, start, end) => {
-      const range = getRangeValues(start, end, spreadsheetData, recursionStack);
-      return `[${range.join(',')}]`;
-    });
-
-    // Handle functions
-    processedFormula = processedFormula.replace(/\b(SUM|AVERAGE|MIN|MAX|COUNT)\s*\(\s*\[([^\]]+)\]\s*\)/gi, (match, func, values) => {
-      const nums = values.split(',').map((v: string) => {
-        const num = parseFloat(v.trim());
-        return isNaN(num) ? 0 : num;
-      });
-
-      switch (func.toUpperCase()) {
-        case 'SUM':
-          return nums.reduce((a, b) => a + b, 0);
-        case 'AVERAGE':
-          return nums.length > 0 ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
-        case 'MIN':
-          return nums.length > 0 ? Math.min(...nums) : 0;
-        case 'MAX':
-          return nums.length > 0 ? Math.max(...nums) : 0;
-        case 'COUNT':
-          return nums.length;
-        default:
-          return 0;
+    // First, handle function calls with ranges
+    // Match patterns like SUM(A1:B3), AVERAGE(A1:B3), etc.
+    processedFormula = processedFormula.replace(
+      /\b(SUM|AVERAGE|MIN|MAX|COUNT)\s*\(\s*([A-Z]\d+):([A-Z]\d+)\s*\)/gi,
+      (match, func, start, end) => {
+        const range = getRangeValues(start, end, spreadsheetData, recursionStack);
+        const result = applyFunction(func.toUpperCase(), range);
+        return String(result);
       }
-    });
+    );
 
     // Handle single cell references (A1)
     processedFormula = processedFormula.replace(/([A-Z]\d+)/g, (match) => {
@@ -177,6 +153,28 @@ export function Spreadsheet() {
     }
   };
 
+  const applyFunction = (func: string, values: (string | number)[]): number => {
+    const nums = values.map((v) => {
+      const num = parseFloat(String(v));
+      return isNaN(num) ? 0 : num;
+    });
+
+    switch (func) {
+      case 'SUM':
+        return nums.reduce((a, b) => a + b, 0);
+      case 'AVERAGE':
+        return nums.length > 0 ? nums.reduce((a, b) => a + b, 0) / nums.length : 0;
+      case 'MIN':
+        return nums.length > 0 ? Math.min(...nums) : 0;
+      case 'MAX':
+        return nums.length > 0 ? Math.max(...nums) : 0;
+      case 'COUNT':
+        return nums.length;
+      default:
+        return 0;
+    }
+  };
+
   const getRangeValues = (
     start: string,
     end: string,
@@ -207,15 +205,16 @@ export function Spreadsheet() {
             try {
               const computed = evaluateFormula(innerFormula, spreadsheetData, newStack);
               if (computed !== '#CIRC!' && computed !== '#ERR!') {
-                const num = parseFloat(String(computed));
-                values.push(isNaN(num) ? 0 : num);
+                values.push(computed);
               }
             } catch {
               // Skip on error
             }
           } else {
             const num = parseFloat(cellValue);
-            values.push(isNaN(num) ? 0 : num);
+            if (!isNaN(num)) {
+              values.push(num);
+            }
           }
         }
       }

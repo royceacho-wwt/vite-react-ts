@@ -26,11 +26,15 @@ export function SpreadsheetCell({ address, data, isSelected, onChange, onSelect 
 
   const handleClick = () => {
     onSelect();
-    setIsEditing(true);
+    if (isSelected && !isEditing) {
+      setEditValue(data?.value || '');
+      setIsEditing(true);
+    }
   };
 
   const handleDoubleClick = () => {
     onSelect();
+    setEditValue(data?.value || '');
     setIsEditing(true);
   };
 
