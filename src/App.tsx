@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
+import { ColoradoCitiesPage } from '@/pages/ColoradoCitiesPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { CrosswordPage } from '@/pages/CrosswordPage';
 import { Game2048Page } from '@/pages/Game2048Page';
@@ -43,6 +44,8 @@ function App() {
         return <StateCapitalsPage />;
       case '/spreadsheet':
         return <SpreadsheetPage />;
+      case '/colorado-cities':
+        return <ColoradoCitiesPage />;
       case '/matt':
         return <MattPage />;
       case '/contact':
