@@ -121,6 +121,16 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
         </li>
         <li>
           <a
+            href="#/michigan-cities"
+            className={`navbar-link${currentPath === '/michigan-cities' ? ' navbar-link--active' : ''}`}
+            onClick={(e) => handleClick(e, '/michigan-cities')}
+            aria-current={currentPath === '/michigan-cities' ? 'page' : undefined}
+          >
+            🏞️ Michigan Cities
+          </a>
+        </li>
+        <li>
+          <a
             href="#/spreadsheet"
             className={`navbar-link${currentPath === '/spreadsheet' ? ' navbar-link--active' : ''}`}
             onClick={(e) => handleClick(e, '/spreadsheet')}
