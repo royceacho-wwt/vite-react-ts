@@ -61,6 +61,16 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
         </li>
         <li>
           <a
+            href="#/chess"
+            className={`navbar-link${currentPath === '/chess' ? ' navbar-link--active' : ''}`}
+            onClick={(e) => handleClick(e, '/chess')}
+            aria-current={currentPath === '/chess' ? 'page' : undefined}
+          >
+            ♟ Chess
+          </a>
+        </li>
+        <li>
+          <a
             href="#/wordgame"
             className={`navbar-link${currentPath === '/wordgame' ? ' navbar-link--active' : ''}`}
             onClick={(e) => handleClick(e, '/wordgame')}
@@ -176,3 +186,4 @@ export function NavBar({ currentPath, onNavigate, isDark, onToggleTheme }: NavBa
     </nav>
   );
 }
+
