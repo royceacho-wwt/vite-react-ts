@@ -1,0 +1,345 @@
+/* ── Colorado Cities Map Page ──────────────────────────────────────────────── */
+
+.co-map-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.co-map-title {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  color: var(--color);
+  text-align: center;
+}
+
+.co-map-subtitle {
+  color: var(--color);
+  opacity: 0.65;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ── Map container ─────────────────────────────────────────────────────────── */
+
+.co-map-container {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+}
+
+/* ── SVG map ───────────────────────────────────────────────────────────────── */
+
+.co-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0.75rem;
+  overflow: visible;
+}
+
+/* State outline */
+.co-map-state {
+  fill: var(--nav-active-bg);
+  stroke: var(--link-color);
+  stroke-width: 0.5;
+}
+
+/* Mountain range decoration */
+.co-map-mountains {
+  fill: none;
+  stroke: var(--link-color);
+  stroke-width: 0.4;
+  opacity: 0.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* ── City groups ───────────────────────────────────────────────────────────── */
+
+.co-map-city-group {
+  cursor: pointer;
+  outline: none;
+}
+
+.co-map-city-group:focus-visible .co-map-city-dot {
+  stroke: var(--color);
+  stroke-width: 0.6;
+}
+
+/* Main dot */
+.co-map-city-dot {
+  fill: var(--link-color);
+  stroke: var(--bg);
+  stroke-width: 0.4;
+  transition: r 0.15s ease, fill 0.15s ease;
+}
+
+.co-map-city-group:hover .co-map-city-dot,
+.co-map-city-group--active .co-map-city-dot {
+  fill: #f59e0b;
+  r: 2.4;
+}
+
+/* Pulse ring */
+.co-map-city-pulse {
+  fill: none;
+  stroke: var(--link-color);
+  stroke-width: 0.5;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.co-map-city-group--active .co-map-city-pulse {
+  opacity: 0.5;
+  animation: co-pulse 1.4s ease-out infinite;
+}
+
+@keyframes co-pulse {
+  0% {
+    r: 1.8;
+    opacity: 0.6;
+  }
+  100% {
+    r: 4.5;
+    opacity: 0;
+  }
+}
+
+/* City label */
+.co-map-city-label {
+  font-size: 2.2px;
+  fill: var(--color);
+  font-weight: 600;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.85;
+}
+
+.co-map-city-group:hover .co-map-city-label,
+.co-map-city-group--active .co-map-city-label {
+  fill: #f59e0b;
+  opacity: 1;
+}
+
+/* ── Popup ─────────────────────────────────────────────────────────────────── */
+
+.co-map-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(340px, 90%);
+  background: var(--card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  z-index: 10;
+  animation: co-popup-in 0.2s ease;
+}
+
+@keyframes co-popup-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.co-map-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.co-map-popup-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--link-color);
+  margin: 0;
+}
+
+.co-map-popup-close {
+  background: none;
+  border: 1px solid var(--nav-border);
+  border-radius: 0.5rem;
+  color: var(--color);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.3rem 0.55rem;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.co-map-popup-close:hover {
+  background: var(--nav-active-bg);
+  color: var(--link-color);
+}
+
+.co-map-popup-population {
+  font-size: 0.85rem;
+  color: var(--color);
+  opacity: 0.6;
+  margin: 0 0 1rem 0;
+}
+
+/* ── Facts list ────────────────────────────────────────────────────────────── */
+
+.co-map-popup-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.co-map-popup-fact {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.co-map-popup-fact-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  background: var(--link-color);
+  color: var(--bg);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  margin-top: 0.05rem;
+}
+
+.co-map-popup-fact-text {
+  font-size: 0.9rem;
+  color: var(--color);
+  line-height: 1.5;
+}
+
+/* ── Legend ────────────────────────────────────────────────────────────────── */
+
+.co-map-legend {
+  width: 100%;
+  max-width: 760px;
+  margin-top: 2rem;
+}
+
+.co-map-legend-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color);
+  margin: 0 0 0.75rem 0;
+}
+
+.co-map-legend-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.5rem;
+}
+
+.co-map-legend-item {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.co-map-legend-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.875rem;
+  background: var(--card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  color: var(--color);
+  font-size: 0.9rem;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.co-map-legend-btn:hover {
+  background: var(--nav-active-bg);
+  border-color: var(--link-color);
+}
+
+.co-map-legend-item--active .co-map-legend-btn {
+  background: var(--nav-active-bg);
+  border-color: var(--link-color);
+}
+
+.co-map-legend-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--link-color);
+  flex-shrink: 0;
+}
+
+.co-map-legend-item--active .co-map-legend-dot {
+  background: #f59e0b;
+}
+
+.co-map-legend-name {
+  flex: 1;
+  font-weight: 600;
+}
+
+.co-map-legend-pop {
+  font-size: 0.78rem;
+  opacity: 0.55;
+  white-space: nowrap;
+}
+
+/* ── Responsive ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .co-map-page {
+    padding: 1.5rem 0.75rem 3rem;
+  }
+
+  .co-map-popup {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+    width: 100%;
+    border-radius: 1.25rem 1.25rem 0 0;
+    animation: co-popup-slide-up 0.25s ease;
+  }
+
+  @keyframes co-popup-slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .co-map-legend-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
