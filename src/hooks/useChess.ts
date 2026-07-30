@@ -222,7 +222,6 @@ function rawMoves(
 function isSquareAttacked(board: Board, sq: number, bySide: 'w' | 'b'): boolean {
   // Use raw moves of a dummy king on sq to detect attacks
   const dummyCastling: Castling = { wK: false, wQ: false, bK: false, bQ: false };
-  const oppSide: 'w' | 'b' = bySide === 'w' ? 'b' : 'w';
   for (let i = 0; i < 64; i++) {
     if (color(board[i]) !== bySide) continue;
     const moves = rawMoves(board, i, bySide, dummyCastling, null);
