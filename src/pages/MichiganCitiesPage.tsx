@@ -36,7 +36,7 @@ const CITIES: City[] = [
     facts: [
       'Detroit is the birthplace of Motown Records, founded by Berry Gordy in 1959, launching legends like Stevie Wonder and Diana Ross.',
       'The city is known as the "Motor City" — Ford, General Motors, and Chrysler (Stellantis) all have deep roots here, shaping the global auto industry.',
-      'Detroit\'s Eastern Market is one of the largest historic public market districts in the US, operating continuously since 1891.',
+      "Detroit's Eastern Market is one of the largest historic public market districts in the US, operating continuously since 1891.",
     ],
   },
   {
@@ -48,7 +48,7 @@ const CITIES: City[] = [
     emoji: '🍺',
     facts: [
       'Grand Rapids is nicknamed "Beer City USA" — it has more craft breweries per capita than almost any other US city.',
-      'The city hosts ArtPrize, one of the world\'s largest and most attended art competitions, drawing hundreds of thousands of visitors each fall.',
+      "The city hosts ArtPrize, one of the world's largest and most attended art competitions, drawing hundreds of thousands of visitors each fall.",
       'Grand Rapids was home to President Gerald R. Ford, the 38th US President, whose presidential museum sits on the Grand River.',
     ],
   },
@@ -60,7 +60,7 @@ const CITIES: City[] = [
     population: 138_247,
     emoji: '🔧',
     facts: [
-      'Warren is home to the US Army\'s Tank-Automotive and Armaments Command (TACOM), one of the largest military installations in Michigan.',
+      "Warren is home to the US Army's Tank-Automotive and Armaments Command (TACOM), one of the largest military installations in Michigan.",
       'The city hosts the General Motors Technical Center, a landmark campus designed by renowned architect Eero Saarinen, opened in 1956.',
       'Warren is the third-largest city in Michigan and one of the most densely populated cities in the Midwest.',
     ],
@@ -75,7 +75,7 @@ const CITIES: City[] = [
     facts: [
       'Sterling Heights is consistently ranked among the safest large cities in the United States.',
       'The city is home to the Chrysler (Stellantis) Sterling Heights Assembly Plant, one of the most productive auto plants in North America.',
-      'Sterling Heights hosts the Freedom Festival, one of Michigan\'s largest annual community celebrations, drawing tens of thousands each summer.',
+      "Sterling Heights hosts the Freedom Festival, one of Michigan's largest annual community celebrations, drawing tens of thousands each summer.",
     ],
   },
   {
@@ -87,8 +87,8 @@ const CITIES: City[] = [
     emoji: '🎓',
     facts: [
       'Ann Arbor is home to the University of Michigan, founded in 1817, whose football stadium "The Big House" is the largest stadium in the US with over 107,000 seats.',
-      'The city has more bookstores and coffee shops per capita than almost any other US city, earning it a reputation as one of America\'s most intellectual towns.',
-      'Ann Arbor\'s Hash Bash, held annually on the first Saturday of April, has been a fixture since 1972 and helped shape Michigan\'s cannabis policy.',
+      "The city has more bookstores and coffee shops per capita than almost any other US city, earning it a reputation as one of America's most intellectual towns.",
+      "Ann Arbor's Hash Bash, held annually on the first Saturday of April, has been a fixture since 1972 and helped shape Michigan's cannabis policy.",
     ],
   },
 ];
@@ -225,9 +225,7 @@ export function MichiganCitiesPage() {
                 ✕
               </button>
             </div>
-            <p className="mi-map-popup-population">
-              Population: {activeCity.population.toLocaleString()}
-            </p>
+            <p className="mi-map-popup-population">Population: {activeCity.population.toLocaleString()}</p>
             <ul className="mi-map-popup-facts" aria-label="Fun facts">
               {activeCity.facts.map((fact, i) => (
                 <li key={i} className="mi-map-popup-fact">
