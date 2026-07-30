@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
+import { CaliforniaCitiesPage } from '@/pages/CaliforniaCitiesPage';
 import { ColoradoCitiesPage } from '@/pages/ColoradoCitiesPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { CrosswordPage } from '@/pages/CrosswordPage';
@@ -49,6 +50,8 @@ function App() {
         return <ColoradoCitiesPage />;
       case '/michigan-cities':
         return <MichiganCitiesPage />;
+      case '/california-cities':
+        return <CaliforniaCitiesPage />;
       case '/matt':
         return <MattPage />;
       case '/contact':
