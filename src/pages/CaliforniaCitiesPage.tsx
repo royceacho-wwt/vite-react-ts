@@ -7,7 +7,7 @@ import { useCallback, useState } from 'react';
 interface City {
   id: string;
   name: string;
-  /** Approximate position as percentage of the SVG viewBox (0–100) */
+  /** Position in SVG coordinates */
   x: number;
   y: number;
   population: number;
@@ -19,16 +19,15 @@ interface City {
  *   Longitude: -124.48° W (west) to -114.13° W (east)
  *   Latitude:   32.53° N (south) to  42.01° N (north)
  *
- * Conversion to SVG percentage:
- *   x = (lon - (-124.48)) / ((-114.13) - (-124.48)) * 100
- *   y = (42.01 - lat)      / (42.01 - 32.53)        * 100
+ * The SVG viewBox is 0 0 200 280 to match California's elongated shape.
+ * City coordinates are mapped based on their actual lat/lon positions.
  */
 const CITIES: City[] = [
   {
     id: 'los-angeles',
     name: 'Los Angeles',
-    x: 42.5,
-    y: 64.5,
+    x: 78,
+    y: 210,
     population: 3_898_747,
     facts: [
       'Los Angeles has more museums per capita than any other city in the world — over 841 museums and galleries.',
@@ -39,8 +38,8 @@ const CITIES: City[] = [
   {
     id: 'san-diego',
     name: 'San Diego',
-    x: 48.5,
-    y: 78.5,
+    x: 95,
+    y: 252,
     population: 1_386_932,
     facts: [
       'San Diego Zoo was the first zoo to create open-air, cageless exhibits that recreate natural habitats.',
@@ -51,8 +50,8 @@ const CITIES: City[] = [
   {
     id: 'san-jose',
     name: 'San Jose',
-    x: 30.5,
-    y: 48.5,
+    x: 48,
+    y: 128,
     population: 1_013_240,
     facts: [
       'San Jose is the unofficial capital of Silicon Valley, home to tech giants like Apple, Google, and Adobe.',
@@ -63,8 +62,8 @@ const CITIES: City[] = [
   {
     id: 'san-francisco',
     name: 'San Francisco',
-    x: 25.5,
-    y: 42.5,
+    x: 35,
+    y: 112,
     population: 873_965,
     facts: [
       'The Golden Gate Bridge\'s iconic "International Orange" color was chosen to enhance visibility in fog.',
@@ -75,8 +74,8 @@ const CITIES: City[] = [
   {
     id: 'fresno',
     name: 'Fresno',
-    x: 40.5,
-    y: 47.5,
+    x: 75,
+    y: 145,
     population: 542_107,
     facts: [
       'Fresno produces more agricultural products than any other county in the US — over $7 billion annually.',
@@ -88,7 +87,58 @@ const CITIES: City[] = [
 
 /* ── SVG map dimensions ────────────────────────────────────────────────────── */
 
-const VIEW_BOX = '0 0 100 120';
+const VIEW_BOX = '0 0 200 280';
+
+/* ── Realistic California outline path ─────────────────────────────────────── */
+// This path represents California's actual geographic shape:
+// - Straight northern border with Oregon (top)
+// - Diagonal eastern border with Nevada (upper right going down)
+// - Angled southeastern border with Arizona (lower right)
+// - Straight southern border with Mexico (bottom)
+// - Jagged Pacific coastline on the west with SF Bay indentation
+const CALIFORNIA_PATH = `
+  M 25 15
+  L 160 15
+  L 165 20
+  L 170 30
+  L 175 45
+  L 178 65
+  L 180 90
+  L 180 115
+  L 178 140
+  L 175 165
+  L 170 185
+  L 165 200
+  L 162 210
+  L 165 215
+  L 180 215
+  L 180 260
+  L 85 260
+  L 82 252
+  L 78 242
+  L 72 230
+  L 65 218
+  L 55 205
+  L 45 190
+  L 38 175
+  L 32 160
+  L 28 145
+  L 25 132
+  L 24 122
+  L 28 115
+  L 35 110
+  L 40 108
+  L 38 102
+  L 32 98
+  L 25 92
+  L 20 82
+  L 18 70
+  L 18 55
+  L 20 40
+  L 22 28
+  L 25 15
+  Z
+`;
 
 /* ── Component ─────────────────────────────────────────────────────────────── */
 
@@ -126,49 +176,13 @@ export function CaliforniaCitiesPage() {
           aria-label="Map of California"
           role="img"
         >
-          {/* California state outline - simplified shape */}
-          <path
-            className="ca-map-state"
-            d="M 15 5 
-               L 75 5 
-               L 78 8 
-               L 80 15 
-               L 78 25 
-               L 72 35 
-               L 65 45 
-               L 58 55 
-               L 55 65 
-               L 52 75 
-               L 50 85 
-               L 55 95 
-               L 60 100 
-               L 55 105 
-               L 45 108 
-               L 35 105 
-               L 30 95 
-               L 25 85 
-               L 22 75 
-               L 20 65 
-               L 18 55 
-               L 15 45 
-               L 12 35 
-               L 10 25 
-               L 8 15 
-               L 10 8 
-               Z"
-          />
+          {/* California state outline - realistic shape */}
+          <path className="ca-map-state" d={CALIFORNIA_PATH} />
 
-          {/* Pacific Ocean waves decoration */}
-          <g className="ca-map-waves">
-            <path d="M 5 50 Q 8 48 11 50 Q 14 52 17 50" />
-            <path d="M 3 60 Q 6 58 9 60 Q 12 62 15 60" />
-            <path d="M 6 70 Q 9 68 12 70 Q 15 72 18 70" />
-            <path d="M 8 80 Q 11 78 14 80 Q 17 82 20 80" />
-          </g>
-
-          {/* Mountain range decoration (Sierra Nevada) */}
-          <polyline className="ca-map-mountains" points="55,20 60,12 65,18 70,8 75,15 78,10" />
-          <polyline className="ca-map-mountains" points="50,35 55,28 60,33 65,25 70,30" />
+          {/* Pacific Ocean label */}
+          <text className="ca-map-ocean-label" x="8" y="180" transform="rotate(-90, 8, 180)">
+            Pacific Ocean
+          </text>
 
           {/* City dots */}
           {CITIES.map((city) => {
@@ -185,9 +199,9 @@ export function CaliforniaCitiesPage() {
                 aria-pressed={isActive}
                 data-testid={`city-${city.id}`}
               >
-                <circle className="ca-map-city-dot" cx={city.x} cy={city.y} r="2.2" />
-                <circle className="ca-map-city-pulse" cx={city.x} cy={city.y} r="2.2" />
-                <text className="ca-map-city-label" x={city.x} y={city.y - 3.5} textAnchor="middle">
+                <circle className="ca-map-city-dot" cx={city.x} cy={city.y} r="5" />
+                <circle className="ca-map-city-pulse" cx={city.x} cy={city.y} r="5" />
+                <text className="ca-map-city-label" x={city.x} y={city.y - 8} textAnchor="middle">
                   {city.name}
                 </text>
               </g>

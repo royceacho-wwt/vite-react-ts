@@ -31,7 +31,7 @@
 .ca-map-container {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
 }
 
 /* ── SVG map ───────────────────────────────────────────────────────────────── */
@@ -48,27 +48,17 @@
 .ca-map-state {
   fill: var(--nav-active-bg);
   stroke: var(--link-color);
-  stroke-width: 0.8;
+  stroke-width: 2;
   stroke-linejoin: round;
 }
 
-/* Ocean waves decoration */
-.ca-map-waves path {
-  fill: none;
-  stroke: var(--link-color);
-  stroke-width: 0.4;
-  opacity: 0.3;
-  stroke-linecap: round;
-}
-
-/* Mountain range decoration */
-.ca-map-mountains {
-  fill: none;
-  stroke: var(--link-color);
-  stroke-width: 0.5;
-  opacity: 0.25;
-  stroke-linejoin: round;
-  stroke-linecap: round;
+/* Ocean label */
+.ca-map-ocean-label {
+  font-size: 12px;
+  fill: var(--link-color);
+  opacity: 0.4;
+  font-style: italic;
+  letter-spacing: 2px;
 }
 
 /* ── City groups ───────────────────────────────────────────────────────────── */
@@ -80,28 +70,28 @@
 
 .ca-map-city-group:focus-visible .ca-map-city-dot {
   stroke: var(--color);
-  stroke-width: 0.8;
+  stroke-width: 2;
 }
 
 /* Main dot */
 .ca-map-city-dot {
   fill: var(--link-color);
   stroke: var(--bg);
-  stroke-width: 0.5;
+  stroke-width: 1.5;
   transition: r 0.2s ease, fill 0.2s ease;
 }
 
 .ca-map-city-group:hover .ca-map-city-dot,
 .ca-map-city-group--active .ca-map-city-dot {
   fill: #f59e0b;
-  r: 3;
+  r: 7;
 }
 
 /* Pulse ring */
 .ca-map-city-pulse {
   fill: none;
   stroke: var(--link-color);
-  stroke-width: 0.6;
+  stroke-width: 1.5;
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -113,24 +103,24 @@
 
 @keyframes ca-pulse {
   0% {
-    r: 2.2;
+    r: 5;
     opacity: 0.6;
   }
   100% {
-    r: 6;
+    r: 15;
     opacity: 0;
   }
 }
 
 /* City label */
 .ca-map-city-label {
-  font-size: 3px;
+  font-size: 8px;
   fill: var(--color);
   font-weight: 600;
   pointer-events: none;
   user-select: none;
   opacity: 0.85;
-  text-shadow: 0 0 2px var(--bg), 0 0 4px var(--bg);
+  text-shadow: 0 0 3px var(--bg), 0 0 6px var(--bg);
 }
 
 .ca-map-city-group:hover .ca-map-city-label,
