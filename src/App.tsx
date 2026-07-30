@@ -6,6 +6,7 @@ import { NavBar } from '@/components/NavBar';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { useRouter } from '@/hooks/useRouter';
 import { CaliforniaCitiesPage } from '@/pages/CaliforniaCitiesPage';
+import { ChessPage } from '@/pages/ChessPage';
 import { ColoradoCitiesPage } from '@/pages/ColoradoCitiesPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { CrosswordPage } from '@/pages/CrosswordPage';
@@ -56,6 +57,8 @@ function App() {
         return <MattPage />;
       case '/contact':
         return <ContactPage />;
+      case '/chess':
+        return <ChessPage />;
       case '/':
       default:
         return <HomePage count={count} onIncrement={() => setCount((c) => c + 1)} />;
@@ -71,3 +74,4 @@ function App() {
 }
 
 export default App;
+
