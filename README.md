@@ -22,6 +22,22 @@ This a React 18 + TypeScript + Vitest and React Testing Library + GitHub Actions
 - 🧪&nbsp; [Vitest](https://vitest.dev/) + [React Testing Library](https://testing-library.com/docs/react-testing-library/intro)
 - 🚀&nbsp; [GitHub Actions](https://docs.github.com/en/actions) with deployment on [GitHub Pages](https://pages.github.com/)
 
+### Applications
+
+This template includes several interactive applications and games:
+
+- ♟️&nbsp; **Chess Game** - Play against a CPU opponent with minimax AI
+- 🌦️&nbsp; **Weather Dashboard** - Weather information display
+- 🕐&nbsp; **Time Zone Converter** - Time zone management
+- ⭕&nbsp; **Tic Tac Toe** - Classic game implementation
+- 🎲&nbsp; **2048 Game** - Number puzzle game
+- 🟩&nbsp; **Word Game** - Word puzzle challenge
+- 🏆&nbsp; **Crossword Puzzle** - Interactive crossword
+- ⭐&nbsp; **Shooting Stars** - Animation game
+- 🏛️&nbsp; **State Capitals Quiz** - Educational quiz
+- 📊&nbsp; **Spreadsheet** - Formula-based spreadsheet
+- 🌴🏔️🏞️&nbsp; **State City Maps** - Interactive maps for California, Colorado, and Michigan
+
 ### Coding Style
 
 - VSCode settings & extensions recommendations
